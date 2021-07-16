@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Hospital-Management-System
 
 A minor demonstration of an Hospital Management System
@@ -74,5 +73,3 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
 
-
->>>>>>> e3eff3a7e7bea8268ca015f4682a5c9604931cac
