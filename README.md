@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+# Hospital-Management-System
+
+A minor demonstration of an Hospital Management System
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -68,3 +73,6 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+>>>>>>> e3eff3a7e7bea8268ca015f4682a5c9604931cac
