@@ -11,7 +11,7 @@ const initialState = {
 export const UsersDispatchContext = createContext();
 export const UsersStateContext = createContext();
 
-const reducers = ({ type, payload }) => {
+const reducers = (initialState, { type, payload }) => {
   switch (type) {
     case "REQUEST_USERS":
       return {
@@ -38,6 +38,7 @@ const reducers = ({ type, payload }) => {
         loading: false,
         loaded: true,
         user: payload.user,
+        users: payload.users
       };
     case "REMOVE_USER_SUCCESSFUL":
       return {
@@ -57,25 +58,61 @@ const reducers = ({ type, payload }) => {
   }
 };
 
+const usersData = [
+    {
+      name: 'timi',
+      email: 'timi@g.com',
+      phone: '0812334444',
+      password: 'timi',
+      isAdmin: true,
+      role: 'doctor',
+      toBeConsulted: false
+    },
+    {
+      name: 'tobi',
+      email: 'tobi@g.com',
+      phone: '0812334444',
+      password: 'tobi',
+      isAdmin: false,
+      role: 'patient',
+      toBeConsulted: true
+    },
+    {
+      name: 'tomi',
+      email: 'tomi@g.com',
+      phone: '0812334444',
+      password: 'tomi',
+      isAdmin: false,
+      role: 'accountant',
+      toBeConsulted: false
+    }
+  ];
 export const getUsers = async (dispatch) => {
+  
     dispatch({
         type: "REQUEST_USERS"
     });
-    await axios.get("api")
-    .then(res=>{
-        dispatch({
-            type: "GET_USERS_SUCCESSFUL",
-            payload: {
-                users: res.data.users
-            }
-        })
-    })
-    .catch(err=>{
-        dispatch({
-            type: "USERS_FAILURE"
-        });
-        console.log(`Error getting users: err`)
-    })
+    dispatch({
+      type: 'GET_USERS_SUCCESSFUL',
+      payload: {
+        users: usersData
+      }
+    });
+    // await axios.get("api")
+    // .then(res=>{
+    //     dispatch({
+    //         type: "GET_USERS_SUCCESSFUL",
+    //         payload: {
+    //             users: res.data.users
+    //         }
+    //     })
+    // })
+    // .catch(err=>{
+    //     dispatch({
+    //         type: "USERS_FAILURE"
+    //     });
+    //     console.log(`Error getting users: err`)
+    // })
 };
 
 export const addUser = async (dispatch, user) => {
@@ -117,6 +154,18 @@ export const updateUser = async (dispatch, user) => {
         });
         console.log(`Error updating user: err`)
     })
+};
+export const requestConsult = async (dispatch, user) => {
+    dispatch({
+        type: "REQUEST_USERS"
+    });
+        dispatch({
+            type: "UPDATE_USER_SUCCESSFUL",
+            payload: {
+                user: user,
+                users: usersData
+            }
+        });
 };
 export const removeUser = async (dispatch, user) => {
     dispatch({
