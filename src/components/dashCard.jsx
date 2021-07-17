@@ -4,7 +4,7 @@ import {Card, Button, Row, Col} from 'react-bootstrap';
 
 const DashCard = (props) => {
     return (
-        <Card bg={props.message.bg}>
+        <Card bg={props.message.bg} className='bg-gradient'>
             {/* <Card.Img variant="top" src="holder.js/100px160" /> */}
             <Card.Body>
                 <Row>
@@ -13,7 +13,7 @@ const DashCard = (props) => {
                     </Col>
                     <Col>
                     <Card.Title>{props.message.content.length}</Card.Title>
-                    <Card.Subtitle className="mb-2">{props.message.subtitle}</Card.Subtitle>
+                    <Card.Subtitle className="mb-2" style={{textTransform: 'capitalize'}}>{props.message.subtitle}</Card.Subtitle>
                     {/* <Card.Text>
                         Some quick example text to build on the card title and make up the bulk of
                         the card's content.
@@ -22,7 +22,7 @@ const DashCard = (props) => {
                 </Row>
             </Card.Body>
             <Card.Footer>
-                <Card.Link href="#">Card Link</Card.Link>
+                <Card.Link href="#" className='mr-auto'>Card Link</Card.Link>
                 <Card.Link href="#">
                     <Link to={props.message.route}>
                         <Button variant="primary">Another Link</Button>

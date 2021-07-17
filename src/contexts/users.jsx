@@ -2,7 +2,7 @@ import React, { createContext, useReducer } from "react";
 import axios from "axios";
 
 const initialState = {
-  loading: false,
+  loading: true,
   loaded: false,
   users: null,
   user: null
@@ -38,7 +38,7 @@ const reducers = (initialState, { type, payload }) => {
         loading: false,
         loaded: true,
         user: payload.user,
-        users: payload.users
+        // users: payload.users
       };
     case "REMOVE_USER_SUCCESSFUL":
       return {

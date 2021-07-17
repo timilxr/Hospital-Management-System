@@ -1,12 +1,13 @@
 import React, {useContext, useEffect} from 'react';
-import { Row, Col, Button } from 'react-bootstrap';
+import { Row, Col, Button, Jumbotron as div } from 'react-bootstrap';
 import DashCard from '../components/dashCard';
+import DashNav from '../components/dashboardNav';
 import Loading from '../components/loading';
-import { AuthDispatchContext, AuthStateContext, authenticateUser } from '../contexts/auth';
+import { AuthDispatchContext, AuthStateContext, requestConsult } from '../contexts/auth';
 import { DrugsDispatchContext, DrugsStateContext, getDrugs } from '../contexts/drugs';
-import { UsersDispatchContext, UsersStateContext, getUsers, requestConsult } from '../contexts/users';
+import { UsersDispatchContext, UsersStateContext, getUsers } from '../contexts/users';
 
-const Dashboard = () => {
+const Dashboard = (props) => {
     const authDispatch = useContext(AuthDispatchContext);
     const drugsDispatch = useContext(DrugsDispatchContext);
     const usersDispatch = useContext(UsersDispatchContext);
@@ -22,7 +23,7 @@ const Dashboard = () => {
             route: '/dashboard/users'
         },
         {
-            subtitle: "Priscriptions",
+            subtitle: "priscriptions",
             bg: "success",
             content: drugsState.drugs,
             route: '/dashboard/priscriptions'
@@ -34,32 +35,46 @@ const Dashboard = () => {
             ...usersState.users,
             toBeConsulted: true
         }
-        requestConsult(usersDispatch, newuser);
+        requestConsult(authDispatch, newuser);
     }
 
     useEffect(()=>{
-        authenticateUser(authDispatch);
         getDrugs(drugsDispatch);
         getUsers(usersDispatch);
-    }, [authDispatch, drugsDispatch, usersDispatch])
+    }, [drugsDispatch, usersDispatch, authState])
 
-    if (authState.loading || usersState.loading || drugsState.loading){
+    if (usersState.loading || drugsState.loading){
         return <Loading />
     }
 
     return(
-        <div>
-            <h1>Dashboard</h1>
-            <h3>Welcome {authState.user.name}</h3>
-            {authState.user.toBeConsulted && <Button variant="info" onClick={request}>Request Consultation</Button>}
+        <div className='container-fluid'>
             <Row>
-                {content.map(item=>{
-                    return(
-                        <Col key={item.subtitle}>
-                            <DashCard message={item} />
-                        </Col>
-                    )
-                })}
+                <Col xs={5} md={3} variant='dark' className='bg-dark px-0'>
+                    <DashNav user={props.user}/>
+                </Col>
+                <Col className="bg-light bg-gradient ml-0">
+                    <div className='p-2 pt-3 pt-md-5'>
+                    <h3 className='mb-3'>Welcome {props.user.name}</h3>
+                        {!authState.user.toBeConsulted ?
+                         <Button variant="info" onClick={request}>Request Consultation</Button>
+                        :
+                        <h4 className="h4">Awaiting Consultation</h4> }
+                        <Row className="mt-3 mt-md-5">
+                            {content.map(item=>{
+                                if (authState.user.role === 'patient' && item.subtitle != 'priscriptions'){
+                                    return <></>;
+                                } 
+                                // else if (props.user.role === 'patient' && item.subtitle != 'Prescription')
+                                    return(
+                                    <Col xs={12} sm={3} md={4} className='shadow' key={item.subtitle}>
+                                        <DashCard message={item} />
+                                    </Col>
+                                )
+                            })}
+                        </Row>
+                    </div>
+                </Col>
             </Row>
         </div>
     )

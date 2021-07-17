@@ -4,18 +4,18 @@ import {Route, Redirect} from 'react-router-dom';
 import Loading from './loading';
 
 const ProtectedRoute = ({ component: Component, ...rest }) => {
-    const {isLoggedIn, loaded} = useContext(AuthStateContext);
+    const {isLoggedIn, loading, user} = useContext(AuthStateContext);
     const dispatch = useContext(AuthDispatchContext);
      useEffect(()=>{
          authenticateUser(dispatch);
      }, [dispatch])
 
-    console.log(isLoggedIn);
+    // console.log(isLoggedIn);
 
-    if(loaded){
-        return <Route {...rest} render={props => isLoggedIn ? <Component {...props} /> : <Redirect to='/' />}/>
+    if(loading){
+        return <Loading />;
     }
-    return <Loading />;
+    return <Route {...rest} render={props => isLoggedIn ? <Component {...props} user={user} /> : <Redirect to='/' />}/>
     // return "Hello world";
 }
 

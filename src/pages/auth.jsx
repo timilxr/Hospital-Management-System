@@ -10,11 +10,11 @@ const AuthPage = (props) => {
     const authDispatch = useContext(AuthDispatchContext);
     const {loading, isLoggedIn} = useContext(AuthStateContext);
     const [newUser, setNewUser] = useState(true);
-    isLoggedIn && history.push('/');
-
     useEffect(()=>{
         authenticateUser(authDispatch);
     }, [authDispatch]);
+
+    isLoggedIn && history.push('/');
 
     const handleUser = () => {
         setNewUser(!newUser);

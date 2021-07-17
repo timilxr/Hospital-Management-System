@@ -2,7 +2,7 @@ import React, { createContext, useReducer } from "react";
 // import axios from "axios";
 
 const initialState = {
-  loading: false,
+  loading: true,
   loaded: false,
   isLoggedIn: false,
   user: null
@@ -18,6 +18,14 @@ const reducers = (state, { type, payload }) => {
         ...state,
         loading: true,
       };
+    case 'TOGGLE_CONSULT':
+      return{
+        ...state,
+        loading: false,
+        loaded: true,
+        isLoggedIn: true,
+        user: payload.user
+      }
     case "AUTH_SUCCESSFUL":
       return {
         ...state,
@@ -39,6 +47,16 @@ const reducers = (state, { type, payload }) => {
   }
 };
 
+const userData = {
+  name: 'timi',
+  email: 'timi@g.com',
+  phone: '0812334444',
+  password: 'timi',
+  isAdmin: true,
+  role: 'patient',
+  toBeConsulted: false
+}
+
 export const authenticateUser = (dispatch) => {
   // await axios.post()
   // dispatch({
@@ -47,21 +65,25 @@ export const authenticateUser = (dispatch) => {
   dispatch({
     type: "AUTH_SUCCESSFUL",
     payload: {
-      user: {
-        name: 'timi',
-        email: 'timi@g.com',
-        phone: '0812334444',
-        password: 'timi',
-        isAdmin: true,
-        role: 'doctor',
-        toBeConsulted: false
-      }
+      user: userData
     }
   });
 
   // dispatch({
   //   type: "AUTH_FAILURE",
   // });
+};
+
+export const requestConsult = async (dispatch, user) => {
+  // dispatch({
+  //     type: "REQUEST_USERS"
+  // });
+      dispatch({
+          type: "TOGGLE_CONSULT",
+          payload: {
+              user: user
+          }
+      });
 };
 
 const AuthProvider = ({ children }) => {

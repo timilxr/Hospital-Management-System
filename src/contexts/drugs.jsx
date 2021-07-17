@@ -2,7 +2,7 @@ import React, { createContext, useReducer } from "react";
 import axios from "axios";
 
 const initialState = {
-    loading: false,
+    loading: true,
     loaded: false,
     doctorsId: null,
     nursesId: null,
