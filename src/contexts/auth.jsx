@@ -1,5 +1,7 @@
-import React, { createContext, useReducer } from "react";
-// import axios from "axios";
+import React, { createContext, useEffect, useReducer, useState } from "react";
+import useLocalStorage from "../action/useLocalStorage";
+import axios from "axios";
+import _get from 'lodash.get';
 
 const initialState = {
   loading: true,
@@ -87,7 +89,17 @@ export const requestConsult = async (dispatch, user) => {
 };
 
 const AuthProvider = ({ children }) => {
+  const [info, setInfo] = useLocalStorage("E_com", null);
+  const newUserState = {
+    ...initialState,
+    user: info,
+    isLoggedIn: _get(info, 'fullName', '').length > 0
+  }
   const [state, dispatch] = useReducer(reducers, initialState);
+  useEffect(()=>{
+    // axios.get('/users/verifyy', { token: info})
+    setInfo(state.user);
+  }, [state.isLoggedIn])
 
   return (
     <AuthDispatchContext.Provider value={dispatch}>
