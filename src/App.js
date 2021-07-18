@@ -1,7 +1,8 @@
 import AuthProvider from './contexts/auth';
 import DrugsProvider from './contexts/drugs';
 import UsersProvider from './contexts/users';
-import ProtectedRoute from './components/protectedRoute';
+// import ProtectedRoute from './components/protectedRoute';
+import ProtectedRoute from './protected/protectedRoute';
 // import { Container } from 'react-bootstrap';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 

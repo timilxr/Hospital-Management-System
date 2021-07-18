@@ -4,7 +4,7 @@ import {Card, Button, Row, Col} from 'react-bootstrap';
 
 const DashCard = (props) => {
     return (
-        <Card bg={props.message.bg} className='bg-gradient'>
+        <Card bg={props.message.bg} className='bg-gradient shadow-lg'>
             {/* <Card.Img variant="top" src="holder.js/100px160" /> */}
             <Card.Body>
                 <Row>
