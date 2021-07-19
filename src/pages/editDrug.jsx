@@ -14,8 +14,12 @@ const EditDrug = ({...props}) => {
     const {id} = useParams();
     const dispatch = useContext(DrugsDispatchContext);
     const {users} = useContext(UsersStateContext);
-    const doctors = users.filter(user=>user.role !== 'doctor');
-    const patients = users.filter(user=>user.role !== 'patient');
+    const doctors = users.filter(user=>user.role === 'doctor');
+    const patients = users.filter(user=>user.role === 'patient');
+    const nurses = users.filter(user=>user.role === 'nurse');
+    const accountants = users.filter(user=>user.role === 'accountant');
+    const toBeConsulteds = users.filter(user=>user.toBeConsulted === true);
+
     const userDispatch = useContext(UsersDispatchContext);
     const [loading, setLoading] = useState(true);
     // getUser(dispatch, id);

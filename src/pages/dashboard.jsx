@@ -11,22 +11,58 @@ const Dashboard = (props) => {
     const drugsDispatch = useContext(DrugsDispatchContext);
     const usersDispatch = useContext(UsersDispatchContext);
     const authState = useContext(AuthStateContext);
-    const drugsState= useContext(DrugsStateContext);
-    const usersState= useContext(UsersStateContext);
-    console.log(usersState);
-    console.log(drugsState);
+    const {drugs, loaded: drugLoaded}= useContext(DrugsStateContext);
+    const {users, loaded: userLoaded} = useContext(UsersStateContext);
+    const doctors = users.filter(user=>user.role === 'doctor');
+    const patients = users.filter(user=>user.role === 'patient');
+    const nurses = users.filter(user=>user.role === 'nurse');
+    const accountants = users.filter(user=>user.role === 'accountant');
+    const toBeConsulteds = users.filter(user=>user.toBeConsulted === true);
+    const notCheckeds = users.filter(user=>user.checked === false);
+    console.log(users);
+    console.log(drugs);
 
     const content = [
         {
             subtitle: "Users",
             bg: "primary",
-            content: usersState.users,
+            content: users,
+            route: '/users'
+        },
+        {
+            subtitle: "Doctors",
+            bg: "primary",
+            content: doctors,
+            route: '/users'
+        },
+        {
+            subtitle: "Patients",
+            bg: "primary",
+            content: patients,
+            route: '/users'
+        },
+        {
+            subtitle: "To be Consulted",
+            bg: "primary",
+            content: toBeConsulteds,
+            route: '/users'
+        },
+        {
+            subtitle: "Nurses",
+            bg: "primary",
+            content: nurses,
+            route: '/users'
+        },
+        {
+            subtitle: "Accountants",
+            bg: "primary",
+            content: accountants,
             route: '/users'
         },
         {
             subtitle: "priscriptions",
             bg: "success",
-            content: drugsState.drugs,
+            content: drugs,
             route: '/priscriptions'
         },
     ];
@@ -36,7 +72,7 @@ const Dashboard = (props) => {
         getUsers(usersDispatch);
     }, [drugsDispatch, usersDispatch, props.user])
 
-    if (!usersState.loaded || !drugsState.loaded){
+    if (!userLoaded || !drugLoaded){
         return <Loading />
     }
 
@@ -44,7 +80,7 @@ const Dashboard = (props) => {
         <div className='container-fluid'>
                         <Row className="mt-3 mt-md-5">
                             {content.map(item=>{
-                                if (authState.user.role === 'patient' && item.subtitle !== 'priscriptions'){
+                                if (props.user.role === 'patient' && item.subtitle !== 'priscriptions'){
                                     return <></>;
                                 } 
                                 // else if (props.user.role === 'patient' && item.subtitle != 'Prescription')
