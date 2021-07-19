@@ -1,22 +1,20 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Form from 'react-bootstrap/Form';
 
 
 const Check = (props) => {
+    const [check, setCheck] = useState(props.data.value);
+    const toggle = (e) => {
+        props.getInput({...e, target:{...e.target, value: check}});
+        // console.log({...e, target:{...e.target, value: check}});
+        setCheck(prevState=> !prevState);
+    }
     return(
         <Form.Group controlId="formBasicUserType">
-            <Form.Check type="radio" id={`props.data.value`}>
-                <Form.Check.Input type="radio" isValid />
+            <Form.Check type="checkbox"id={`props.data.value`}>
+                <Form.Check.Input checked={check} name={props.data.name} onChange={toggle} type="checkbox" isValid />
+                <Form.Check.Label>{props.data.label}</Form.Check.Label>
             </Form.Check>
-            <Form.Check.Label>{props.data.label}</Form.Check.Label>
-            {/* <Form.Control name={props.data.name} error={props.errors[props.data.name]} defaultValue={props.data.value !== '' ? props.data.value : props.data.options[0]} onChange={props.getInput} as={props.data.type} custom>
-                <option value={props.data.value !== '' ? props.data.value : props.data.options[0]} disabled>
-                    {props.data.value !== '' ? props.data.value : `Select ${props.data.label}`}
-                </option>
-                {
-                    props.data.options.map(option => <option key={option} value={option}>{option}</option>)
-                }
-            </Form.Control> */}
         </Form.Group>
     )
 }

@@ -1,14 +1,14 @@
 import React, {useEffect, useContext} from 'react';
-import { AuthStateContext, authenticateUser, AuthDispatchContext } from '../contexts/auth';
+import { AuthStateContext, AuthDispatchContext } from '../contexts/auth';
 import {Route, Redirect} from 'react-router-dom';
 import Loading from './loading';
 
 const ProtectedRoute = ({ component: Component, ...rest }) => {
     const {isLoggedIn, loading, user} = useContext(AuthStateContext);
     const dispatch = useContext(AuthDispatchContext);
-     useEffect(()=>{
-         authenticateUser(dispatch);
-     }, [dispatch])
+    //  useEffect(()=>{
+    //      authenticateUser(dispatch);
+    //  }, [dispatch])
 
     // console.log(isLoggedIn);
 

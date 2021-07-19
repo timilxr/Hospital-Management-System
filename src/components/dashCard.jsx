@@ -25,7 +25,7 @@ const DashCard = (props) => {
                 <Card.Link href="#" className='mr-auto'>Card Link</Card.Link>
                 <Card.Link href="#">
                     <Link to={props.message.route}>
-                        <Button variant="primary">Another Link</Button>
+                        <Button variant="primary">View</Button>
                     </Link>
                 </Card.Link>
             </Card.Footer>

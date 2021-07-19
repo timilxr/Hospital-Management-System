@@ -20,7 +20,11 @@ const DashNav = (props) => {
                 </Link>
                 </Nav.Link>
                 <Nav.Link>
-                <Link to='/dashboard/priscription' class="text-decoration-none">Priscription
+                <Link to='/prescription' class="text-decoration-none">Prescription
+                </Link>
+                </Nav.Link>
+                <Nav.Link>
+                <Link to='/users' class="text-decoration-none">Users
                 </Link>
                 </Nav.Link>
                 <Nav.Link>

@@ -1,5 +1,5 @@
-import React, {useState, useContext, useEffect} from 'react';
-import {AuthStateContext, AuthDispatchContext, authenticateUser} from '../contexts/auth';
+import React, {useState, useContext} from 'react';
+import {AuthStateContext} from '../contexts/auth';
 import Loading from '../components/loading';
 import { useHistory } from 'react-router-dom';
 import { SignIn, SignUp } from '../components/authComponent';
@@ -7,14 +7,13 @@ import {Row, Col} from 'react-bootstrap';
 
 const AuthPage = (props) => {
     const history = useHistory();
-    const authDispatch = useContext(AuthDispatchContext);
     const {loading, isLoggedIn} = useContext(AuthStateContext);
     const [newUser, setNewUser] = useState(true);
-    useEffect(()=>{
-        authenticateUser(authDispatch);
-    }, [authDispatch]);
+    // useEffect(()=>{
+    //     authenticateUser(authDispatch);
+    // }, [authDispatch]);
 
-    isLoggedIn && history.push('/');
+    isLoggedIn && history.push('/dashboard');
 
     const handleUser = () => {
         setNewUser(!newUser);

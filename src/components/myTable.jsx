@@ -1,5 +1,6 @@
-import React from "react";
+import React, {useContext} from "react";
 import { Link } from "react-router-dom";
+import { updateUser, UsersDispatchContext } from "../contexts/users";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
 
@@ -7,6 +8,7 @@ const MyTable = (props) => {
   // console.log(props);
   const reKeys = Object.keys(props.data[0]);
   const length = Number(props.data.length);
+  const dispatch = useContext(UsersDispatchContext);
   // console.log(length);
   return length < 1 ? (
     <h1>Loading</h1>
@@ -32,6 +34,12 @@ const MyTable = (props) => {
               {Object.entries(value).map((val) => {
                 if (val[0] === "createdAt" || val[0] === "updatedAt") {
                   return <td key={val[0]}>{new Date(val[1]).toString()}</td>;
+                } else if (Array.isArray(val[1])) {
+                  return (
+                    <td key={val[0]}>
+                      {val[1].map((index, detail) => `${index}. ${detail}`)}
+                    </td>
+                  );
                 }
                 return <td key={val[0]}>{val[1]}</td>;
               })}
@@ -39,7 +47,7 @@ const MyTable = (props) => {
               {/* <td>{value.userType? 'Admin' : 'customer'}</td> */}
               {props.edFunc && (
                 <td>
-                  <Link to={`/admin/${props.edFunc}/${value._id}`}>
+                  <Link to={`/${props.edFunc}/${value._id}`}>
                     <Button variant="info" type="button">
                       Edit
                     </Button>
@@ -54,6 +62,17 @@ const MyTable = (props) => {
                     onClick={() => props.delFunc(value._id)}
                   >
                     Delete
+                  </Button>
+                </td>
+              )}
+              {props.consult && (
+                <td>
+                  <Button
+                    variant="primary"
+                    type="button"
+                    onClick={() => {updateUser(dispatch, value._id, {...value, toBeConsulted: false})}}
+                  >
+                    Consult
                   </Button>
                 </td>
               )}

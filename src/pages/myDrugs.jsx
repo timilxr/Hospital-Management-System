@@ -1,27 +1,26 @@
 import React, {useState, useEffect, useContext} from 'react';
 import Loading from '../components/loading';
-import { UsersDispatchContext, UsersStateContext, getUsers, removeUser } from '../contexts/users';
-import {Redirect} from 'react-router-dom';
+import { DrugsDispatchContext, DrugsStateContext, getDrugs, removeDrug } from '../contexts/drugs';
 import Alert from 'react-bootstrap/Alert'
 import Table from '../components/myTable';
 // import axios from 'axios';
 // import { usersData } from '../../../backend/data';
 
-const UserRecords = (props) => {
-    const {users, loaded} = useContext(UsersStateContext);
-    const dispatch = useContext(UsersDispatchContext);
+const MyDrugRecords = (props) => {
+    const {drugs, loaded} = useContext(DrugsStateContext);
+    const myDrugs = drugs.filter(drug=>drug.patientId !== props.user._id);
+    const dispatch = useContext(DrugsDispatchContext);
     const [msg, setMsg] = useState('');
 
     useEffect(()=>{
-        getUsers(dispatch);
+        getDrugs(dispatch);
     }, []);
 
     const delData = (g) => {
-        removeUser(dispatch, g);
+        removeDrug(dispatch, g);
     }
 
     if(!loaded){
-        console.log('hi');
         return <Loading />
     }
 
@@ -29,11 +28,8 @@ const UserRecords = (props) => {
             <div>
                 {msg ? <Alert variant="success">{msg}</Alert> : ''}
                 
-                {users.length > 0 ?
-                    (props.user.isAdmin ?
-                        <Table data={users} edFunc="editUser" delFunc={delData} />
-                        :
-                        <Table data={users} delFunc={delData} />)
+                {myDrugs.length > 0 ?
+                    <Table data={myDrugs} delFunc={delData} />
                     // "table"
                 : <h1>No Data in The Table</h1>
                 }
@@ -41,4 +37,4 @@ const UserRecords = (props) => {
     );
 };
 
-export default UserRecords;
+export default MyDrugRecords;

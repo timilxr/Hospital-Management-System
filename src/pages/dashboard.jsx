@@ -13,19 +13,21 @@ const Dashboard = (props) => {
     const authState = useContext(AuthStateContext);
     const drugsState= useContext(DrugsStateContext);
     const usersState= useContext(UsersStateContext);
+    console.log(usersState);
+    console.log(drugsState);
 
     const content = [
         {
             subtitle: "Users",
             bg: "primary",
             content: usersState.users,
-            route: '/dashboard/users'
+            route: '/users'
         },
         {
             subtitle: "priscriptions",
             bg: "success",
             content: drugsState.drugs,
-            route: '/dashboard/priscriptions'
+            route: '/priscriptions'
         },
     ];
 
@@ -34,7 +36,7 @@ const Dashboard = (props) => {
         getUsers(usersDispatch);
     }, [drugsDispatch, usersDispatch, props.user])
 
-    if (usersState.loading || drugsState.loading){
+    if (!usersState.loaded || !drugsState.loaded){
         return <Loading />
     }
 

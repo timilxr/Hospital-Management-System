@@ -1,4 +1,6 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
+import { AuthStateContext, AuthDispatchContext, signIn} from '../contexts/auth';
+import { UsersStateContext, UsersDispatchContext, addUser } from '../contexts/users';
 import axios from 'axios';
 import {Redirect} from 'react-router-dom';
 import { Form, Button, Alert } from 'react-bootstrap';
@@ -10,7 +12,7 @@ export const SignUp = ({toggler, ...props}) => {
         name: {
             type: 'text',
             label: 'Fullname',
-            name: 'name',
+            name: 'fullName',
             value: ''
         },
         email: {
@@ -41,8 +43,10 @@ export const SignUp = ({toggler, ...props}) => {
         password: ''
     });
     const [errors, setErrors] = useState({});
-    const [msg, setMsg] = useState('');
+    const [msg, setMsg] = useState(null);
     const [validated, setValidated] = useState(false);
+    const authdispatch = useContext(AuthDispatchContext);
+    const userDispatch = useContext(UsersDispatchContext);
 
     const onInputChange = (e) => {
         const {name, value} = e.target;
@@ -55,26 +59,13 @@ export const SignUp = ({toggler, ...props}) => {
         setValidated(false);
     };
 	
-    const handler = (e) => {
-        axios.post('http://localhost:2000/users/register', data)
-        .then((res)=>{
-            console.log(res);
-            if(res.status === 200){
-                setErrors({
-                    email: res.data
-                });
-                setMsg(res.data);
-            }
-            if(res.status === 201){
-                setMsg(res.data);
-            }
-            if(res.status === 202){
-                setErrors(res.data);
-            }
-        })
-        .catch((err)=>console.log(`Error: ${err}`));
-        // console.log("state");
-        // alert(data);
+    const handler = async (e) => {
+        try {
+            await addUser(userDispatch, data);
+            setMsg('you may now log in');
+        } catch (error) {
+            console.error(error);
+        }
         console.log(data);
         setValidated(true);
         e.preventDefault();
@@ -129,6 +120,7 @@ export const SignIn = ({toggler, ...props}) => {
     const [errors, setErrors] = useState({});
     const [msg, setMsg] = useState('');
     const [validated, setValidated] = useState(false);
+    const dispatch = useContext(AuthDispatchContext);
 
     const onInputChange = (e) => {
         const {name, value} = e.target;
@@ -142,23 +134,7 @@ export const SignIn = ({toggler, ...props}) => {
     };
 
     const handler = (e) => {
-        axios.post('http://localhost:2000/users/login', data)
-        .then((res)=>{
-            console.log(res.data);
-            if(res.data.errors){
-                setMsg(res.data)
-            } else {
-                try{
-                    localStorage.setItem('E_com', JSON.stringify(res.data.token));
-                }
-                catch(err){
-                    console.error(err);
-                }
-                // setMsg(res.data);
-                return <Redirect to="/users/" />;
-            }
-        })
-        .catch((err)=>console.log(`Error: ${err}`));
+        signIn(dispatch, data);
         setValidated(false);
         e.preventDefault();
     };

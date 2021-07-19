@@ -7,8 +7,9 @@ import Table from '../components/myTable';
 // import axios from 'axios';
 // import { usersData } from '../../../backend/data';
 
-const UserRecords = (props) => {
+const Patients = (props) => {
     const {users, loaded} = useContext(UsersStateContext);
+    const patients = users.filter(user=>user.role !== 'patient');
     const dispatch = useContext(UsersDispatchContext);
     const [msg, setMsg] = useState('');
 
@@ -29,11 +30,11 @@ const UserRecords = (props) => {
             <div>
                 {msg ? <Alert variant="success">{msg}</Alert> : ''}
                 
-                {users.length > 0 ?
-                    (props.user.isAdmin ?
-                        <Table data={users} edFunc="editUser" delFunc={delData} />
-                        :
-                        <Table data={users} delFunc={delData} />)
+                {patients.length > 0 ?
+                (props.user.isAdmin ?
+                    <Table data={patients} edFunc="editUser" delFunc={delData} />
+                    :
+                    <Table data={patients} delFunc={delData} />)
                     // "table"
                 : <h1>No Data in The Table</h1>
                 }
@@ -41,4 +42,4 @@ const UserRecords = (props) => {
     );
 };
 
-export default UserRecords;
+export default Patients;

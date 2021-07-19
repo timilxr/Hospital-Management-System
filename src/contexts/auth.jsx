@@ -1,10 +1,10 @@
-import React, { createContext, useEffect, useReducer, useState } from "react";
+import React, { createContext, useEffect, useReducer } from "react";
 import useLocalStorage from "../action/useLocalStorage";
 import axios from "axios";
 import _get from 'lodash.get';
 
 const initialState = {
-  loading: true,
+  loading: false,
   loaded: false,
   isLoggedIn: false,
   user: null
@@ -28,13 +28,21 @@ const reducers = (state, { type, payload }) => {
         isLoggedIn: true,
         user: payload.user
       }
-    case "AUTH_SUCCESSFUL":
+    case "LOGIN_SUCCESS":
       return {
         ...state,
         loading: false,
         loaded: true,
         isLoggedIn: true,
         user: payload.user
+      };
+    case "LOGOUT_SUCCESS":
+      return {
+        ...state,
+        loading: false,
+        loaded: true,
+        isLoggedIn: false,
+        user: null
       };
     case "AUTH_FAILURE":
       return {
@@ -49,31 +57,22 @@ const reducers = (state, { type, payload }) => {
   }
 };
 
-const userData = {
-  name: 'timi',
-  email: 'timi@g.com',
-  phone: '0812334444',
-  password: 'timi',
-  isAdmin: true,
-  role: 'patient',
-  toBeConsulted: false
-}
 
-export const authenticateUser = (dispatch) => {
-  // await axios.post()
-  // dispatch({
-  //   type: "REQUEST_AUTH"
-  // });
-  dispatch({
-    type: "AUTH_SUCCESSFUL",
+export const signIn = (dispatch, userData) => {
+  localStorage.setItem("user", JSON.stringify(userData));
+  return dispatch({
+    type: "LOGIN_SUCCESS",
     payload: {
       user: userData
     }
   });
+};
 
-  // dispatch({
-  //   type: "AUTH_FAILURE",
-  // });
+export const signOut = (dispatch) => {
+  localStorage.clear();
+  return dispatch({
+    type: "LOGOUT_SUCCESS"
+  });
 };
 
 export const requestConsult = async (dispatch, user) => {
@@ -89,15 +88,21 @@ export const requestConsult = async (dispatch, user) => {
 };
 
 const AuthProvider = ({ children }) => {
-  const [info, setInfo] = useLocalStorage("E_com", null);
+  const [info, setInfo] = useLocalStorage("user", null);
+  let output;
+  try {
+    output = axios.post('/users/verify', info);
+  } catch (error) {
+    output = false;
+    console.log(error);
+  }
   const newUserState = {
     ...initialState,
     user: info,
-    isLoggedIn: _get(info, 'fullName', '').length > 0
+    isLoggedIn: output.info
   }
-  const [state, dispatch] = useReducer(reducers, initialState);
+  const [state, dispatch] = useReducer(reducers, newUserState);
   useEffect(()=>{
-    // axios.get('/users/verifyy', { token: info})
     setInfo(state.user);
   }, [state.isLoggedIn])
 

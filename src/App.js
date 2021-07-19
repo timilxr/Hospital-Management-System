@@ -10,6 +10,8 @@ import Home from './pages/home';
 import Header from './components/header';
 import AuthPage from './pages/auth';
 import Dashboard from './pages/dashboard';
+import UserRecords from './pages/users';
+import EditUser from './pages/editUser';
 // import './App.css';
 
 function App() {
@@ -24,6 +26,8 @@ function App() {
                 <Route exact path="/" component={Home} />
                 <Route exact path="/auth" component={AuthPage} />
                 <ProtectedRoute exact path="/dashboard" component={Dashboard} />
+                <ProtectedRoute exact path="/users" component={UserRecords} />
+                <ProtectedRoute exact path="/editUser/:id" component={EditUser} />
               </Switch>
             </Router>
           </DrugsProvider>
