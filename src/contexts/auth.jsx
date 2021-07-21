@@ -62,7 +62,7 @@ export const signIn = async (dispatch, userData) => {
   // const data = JSON.parse(userData);
   let output;
   try {
-    await axios.post('/users/verify', userData)
+    await axios.post('https://hospitalms-backend.herokuapp.com/users/verify', userData)
       .then(res => {
         console.log(res);
         output = res;
@@ -133,7 +133,7 @@ const AuthProvider = ({ children }) => {
     if (info) {
       info = JSON.parse(info);
       try {
-        axios.post('/users/verify', info).then(res => {
+        axios.post('https://hospitalms-backend.herokuapp.com/users/verify', info).then(res => {
           output = res.data;
           // console.log(output);
           newState = {
