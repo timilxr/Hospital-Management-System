@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import {Card, Button, Row, Col} from 'react-bootstrap';
+import { Card, Button, Row, Col } from 'react-bootstrap';
 
 const DashCard = (props) => {
     return (
@@ -12,9 +12,9 @@ const DashCard = (props) => {
                         <i className="fa fa-file-text fa-5x"></i>
                     </Col>
                     <Col>
-                    <Card.Title>{props.message.content.length}</Card.Title>
-                    <Card.Subtitle className="mb-2" style={{textTransform: 'capitalize'}}>{props.message.subtitle}</Card.Subtitle>
-                    {/* <Card.Text>
+                        <Card.Title>{props.message.content.length}</Card.Title>
+                        <Card.Subtitle className="mb-2" style={{ textTransform: 'capitalize' }}>{props.message.subtitle}</Card.Subtitle>
+                        {/* <Card.Text>
                         Some quick example text to build on the card title and make up the bulk of
                         the card's content.
                     </Card.Text> */}

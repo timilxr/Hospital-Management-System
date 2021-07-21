@@ -1,12 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
-// import { UsersDispatchContext, UsersStateContext, getUser } from '../contexts/users';
 import { DrugsDispatchContext, DrugsStateContext, updateDrug } from '../contexts/drugs';
 import Loading from '../components/loading';
-// import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { Form, Button, Alert, Table } from 'react-bootstrap';
 import Input from '../components/form-controls/input';
-// import Select from '../components/form-controls/input';
 import Check from '../components/form-controls/check';
 
 
@@ -14,7 +11,6 @@ const Checking = ({ ...props }) => {
   const { drugId } = useParams();
   const dispatch = useContext(DrugsDispatchContext);
   const { drugs: holder, loaded } = useContext(DrugsStateContext);
-  // const [data, setData] = useState(holder);
   console.log(holder);
 
   const [errors, setErrors] = useState({});
@@ -118,10 +114,6 @@ const Checking = ({ ...props }) => {
                   }
                   return <td key={val[0]}>{val[1]}</td>;
                 })}
-
-                {/* <td>
-                                <Check key={field[0]} errors={errors} data={{ type: 'check', label: 'Check this if paid', name: 'isPaid', value: val[1].paid }} getInput={onInputChange} />
-                              </td> */}
               </tr>
             );
           })}
@@ -131,7 +123,6 @@ const Checking = ({ ...props }) => {
         Submit
       </Button>
     </Form>
-    {/* ) */}
   </div>
 }
 

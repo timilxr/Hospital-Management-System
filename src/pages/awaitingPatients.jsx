@@ -1,19 +1,16 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Loading from '../components/loading';
 import { UsersDispatchContext, UsersStateContext, getUsers, removeUser } from '../contexts/users';
-import {Redirect} from 'react-router-dom';
 import Alert from 'react-bootstrap/Alert'
 import Table from '../components/myTable';
-// import axios from 'axios';
-// import { usersData } from '../../../backend/data';
 
 const Patients = (props) => {
-    const {users, loaded} = useContext(UsersStateContext);
-    const waitingPatients = users.filter(user=>user.toBeConsulted);
+    const { users, loaded } = useContext(UsersStateContext);
+    const waitingPatients = users.filter(user => user.toBeConsulted);
     const dispatch = useContext(UsersDispatchContext);
     const [msg, setMsg] = useState('');
 
-    useEffect(()=>{
+    useEffect(() => {
         getUsers(dispatch);
     }, [users]);
 
@@ -21,24 +18,24 @@ const Patients = (props) => {
         removeUser(dispatch, g);
     }
 
-    if(!loaded){
+    if (!loaded) {
         console.log('hi');
         return <Loading />
     }
 
-    return(
-            <div>
-                {msg ? <Alert variant="success">{msg}</Alert> : ''}
-                
-                {waitingPatients.length > 0 ?
+    return (
+        <div>
+            {msg ? <Alert variant="success">{msg}</Alert> : ''}
+
+            {waitingPatients.length > 0 ?
                 (props.user.isAdmin ?
                     <Table data={waitingPatients} edFunc="editUser" delFunc={delData} />
                     :
                     <Table data={waitingPatients} delFunc={delData} consult={true} />)
-                    // "table"
+                // "table"
                 : <h1>No Data in The Table</h1>
-                }
-            </div>
+            }
+        </div>
     );
 };
 

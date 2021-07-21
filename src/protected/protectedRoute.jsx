@@ -12,9 +12,6 @@ import { Route, Redirect } from "react-router-dom";
 const ProtectedRoute = ({ component: Component, ...rest }) => {
   const { isLoggedIn, loaded, user } = useContext(AuthStateContext);
   const dispatch = useContext(AuthDispatchContext);
-  //  useEffect(()=>{
-  //      authenticateUser(dispatch);
-  //  }, [dispatch])
 
   const request = () => {
     let newuser = {
@@ -23,15 +20,13 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
     };
     requestConsult(dispatch, newuser);
   };
-  
+
   if (!loaded) {
-    // console.log(isLoggedIn, 'me');
     return <Loading />;
   }
-  
-  // console.log(isLoggedIn);
+
   return <Route
-  {...rest}
+    {...rest}
     render={(props) => {
       if (isLoggedIn) {
         return (
@@ -64,7 +59,6 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
     }}
   />;
 
-  // return "Hello world";
 };
 
 export default ProtectedRoute;

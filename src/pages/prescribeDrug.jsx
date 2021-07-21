@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from 'react';
 import { UsersDispatchContext, UsersStateContext, getUsers, toggleConsult } from '../contexts/users';
 import { DrugsDispatchContext, DrugsStateContext, getDrug, addDrug } from '../contexts/drugs';
 import Loading from '../components/loading';
-// import axios from 'axios';
 import { useParams, useHistory } from 'react-router-dom';
 import { Form, Button, Alert, Row, Col } from 'react-bootstrap';
 import Input from '../components/form-controls/input';
@@ -18,8 +17,6 @@ const PrescribeDrugs = ({ ...props }) => {
 
     const userDispatch = useContext(UsersDispatchContext);
     const [loading, setLoading] = useState(true);
-    // getUser(dispatch, id);
-    // const {drug, loaded} = useContext(DrugsStateContext);
     const [nurseData, setNurseData] = useState(null)
     const [prescriptionData, setPrescriptionData] = useState(null)
     const [drugData, setDrugData] = useState([])
@@ -49,7 +46,6 @@ const PrescribeDrugs = ({ ...props }) => {
     const [validated, setValidated] = useState(false);
 
     useEffect(() => {
-        // getDrug(dispatch, id);
         getUsers(userDispatch);
         setLoading(false);
     }, [])
@@ -110,12 +106,6 @@ const PrescribeDrugs = ({ ...props }) => {
             value: '',
             options: [...nurses]
         },
-        // password: {
-        //     type: 'password',
-        //     label: 'Password',
-        //     name: 'password',
-        //     value: ''
-        // }
     };
 
     const onInputChange = (e) => {
@@ -156,7 +146,6 @@ const PrescribeDrugs = ({ ...props }) => {
         setMsg('Consult Completed');
         setErrors(null);
         history.push('/dashboard');
-        // document.getElementById('form').reset();
     }
 
     const handler = (e) => {
@@ -192,10 +181,10 @@ const PrescribeDrugs = ({ ...props }) => {
                 <h3>Patient Phone: <a href={`tel:${patient[0].phone}`} className="text-decoration-none">{patient[0].phone}</a></h3>
                 <h3>Patient Email: <a href={`mail:${patient[0].email}`} className="text-decoration-none">{patient[0].email}</a></h3>
                 <Button variant="primary" className='m-2' type="button" onClick={consulted}>
-                            Mark Consulted
-                        </Button>
-                        <h3>Prescribed: {drugData.length}</h3>
-                        <p className='ml-2 ml-md-4'>{drugData.map(pres=>pres.prescription)}</p>
+                    Mark Consulted
+                </Button>
+                <h3>Prescribed: {drugData.length}</h3>
+                <p className='ml-2 ml-md-4'>{drugData.map(pres => pres.prescription)}</p>
             </div>
             <Form noValidate validated={validated} id='form' className='text-left my-5' onSubmit={showMe}>
                 {
@@ -222,7 +211,7 @@ const PrescribeDrugs = ({ ...props }) => {
                             Add More
                         </Button>
                     </Col>
-                    <Col md={{span: 4, offset: 4}}>
+                    <Col md={{ span: 4, offset: 4 }}>
                         <Button variant="success" type="submit" className='m-2' onClick={handler}>
                             Submit all
                         </Button>

@@ -1,15 +1,13 @@
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { updateUser, UsersDispatchContext } from "../contexts/users";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
 
 const MyTable = (props) => {
-  // console.log(props);
   const reKeys = Object.keys(props.data[0]);
   const length = Number(props.data.length);
   const dispatch = useContext(UsersDispatchContext);
-  // console.log(length);
   return length < 1 ? (
     <h1>Loading</h1>
   ) : (
@@ -39,11 +37,10 @@ const MyTable = (props) => {
                   return (
                     <td key={val[0]}>
                       {val[1].map((detail, index) => {
-                      Object.values(detail).map(valu => {
-                        console.log(valu);
-                        return <span>{valu}</span>
-                      })
-                      // )
+                        Object.values(detail).map(valu => {
+                          console.log(valu);
+                          return <span>{valu}</span>
+                        })
                       })}
                     </td>
                   );
@@ -51,7 +48,6 @@ const MyTable = (props) => {
                 return <td key={val[0]}>{val[1]}</td>;
               })}
 
-              {/* <td>{value.userType? 'Admin' : 'customer'}</td> */}
               {props.consult && (
                 <td>
                   <Link to={`/consulting/${value._id}`}>
@@ -78,7 +74,7 @@ const MyTable = (props) => {
                     </Button>
                   </Link>
                 </td>
-              ): ''}
+              ) : ''}
               {props.delFunc && (
                 <td>
                   <Button
@@ -90,17 +86,6 @@ const MyTable = (props) => {
                   </Button>
                 </td>
               )}
-              {/* {props.consult && (
-                <td>
-                  <Button
-                    variant="primary"
-                    type="button"
-                    onClick={() => {updateUser(dispatch, value._id, {...value, toBeConsulted: false})}}
-                  >
-                    Consult
-                  </Button>
-                </td>
-              )} */}
             </tr>
           )
         })}

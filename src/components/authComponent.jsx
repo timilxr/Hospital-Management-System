@@ -1,13 +1,13 @@
-import React, {useContext, useState} from 'react';
-import { AuthStateContext, AuthDispatchContext, signIn} from '../contexts/auth';
+import React, { useContext, useState } from 'react';
+import { AuthStateContext, AuthDispatchContext, signIn } from '../contexts/auth';
 import { UsersStateContext, UsersDispatchContext, addUser } from '../contexts/users';
 import axios from 'axios';
-import {Redirect} from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { Form, Button, Alert } from 'react-bootstrap';
 import Input from './form-controls/input';
 
 
-export const SignUp = ({toggler, ...props}) => {
+export const SignUp = ({ toggler, ...props }) => {
     const formData = {
         name: {
             type: 'text',
@@ -38,7 +38,7 @@ export const SignUp = ({toggler, ...props}) => {
         fullName: '',
         email: '',
         phone: Number,
-		role: 'patient',
+        role: 'patient',
         isAdmin: false,
         password: ''
     });
@@ -49,16 +49,16 @@ export const SignUp = ({toggler, ...props}) => {
     const userDispatch = useContext(UsersDispatchContext);
 
     const onInputChange = (e) => {
-        const {name, value} = e.target;
-        setData((prevState)=>{
-            return{
+        const { name, value } = e.target;
+        setData((prevState) => {
+            return {
                 ...prevState,
                 [name]: value
             };
         });
         setValidated(false);
     };
-	
+
     const handler = async (e) => {
         try {
             await addUser(userDispatch, data);
@@ -75,10 +75,10 @@ export const SignUp = ({toggler, ...props}) => {
         alert(data);
     };
 
-    return(
+    return (
         <Form noValidate validated={validated} className='text-left my-5 pt-5' onSubmit={showMe}>
             {
-                msg && !errors ? <Alert variant="success">{msg}</Alert> : 
+                msg && !errors ? <Alert variant="success">{msg}</Alert> :
                     (msg ? <Alert variant="danger">{msg}</Alert> : <Alert variant="primary">please fill the form</Alert>)
             }
             {
@@ -86,19 +86,19 @@ export const SignUp = ({toggler, ...props}) => {
                     // if(field[1].type === 'select'){
                     //     return <Select key={field[0]} errors={errors} data={field[1]} getInput={onInputChange} />
                     // }
-                    return <Input key={field[0]} errors={errors} data={field[1]} getInput={onInputChange}/>
+                    return <Input key={field[0]} errors={errors} data={field[1]} getInput={onInputChange} />
                 })
             }
             <Button variant="success" type="submit" onClick={handler}>
                 Submit
             </Button>
-			<Button variant="primary" type="submit" className="ml-auto" onClick={toggler}>
+            <Button variant="primary" type="submit" className="ml-auto" onClick={toggler}>
                 Sign in?
             </Button>
         </Form>
     )
 }
-export const SignIn = ({toggler, ...props}) => {
+export const SignIn = ({ toggler, ...props }) => {
     const formData = {
         email: {
             type: 'email',
@@ -123,9 +123,9 @@ export const SignIn = ({toggler, ...props}) => {
     const dispatch = useContext(AuthDispatchContext);
 
     const onInputChange = (e) => {
-        const {name, value} = e.target;
-        setData((prevState)=>{
-            return{
+        const { name, value } = e.target;
+        setData((prevState) => {
+            return {
                 ...prevState,
                 [name]: value
             };
@@ -145,10 +145,10 @@ export const SignIn = ({toggler, ...props}) => {
         alert(data);
     };
 
-    return(
+    return (
         <Form noValidate validated={validated} className='text-left my-5 pt-5' onSubmit={showMe}>
             {
-                msg && !errors ? <Alert variant="success">{msg}</Alert> : 
+                msg && !errors ? <Alert variant="success">{msg}</Alert> :
                     (msg ? <Alert variant="danger">{msg}</Alert> : <Alert variant="primary">please fill the form</Alert>)
             }
             {
@@ -156,13 +156,13 @@ export const SignIn = ({toggler, ...props}) => {
                     // if(field[1].type === 'select'){
                     //     return <Select key={field[0]} errors={errors} data={field[1]} getInput={onInputChange} />
                     // }
-                    return <Input key={field[0]} errors={errors} data={field[1]} getInput={onInputChange}/>
+                    return <Input key={field[0]} errors={errors} data={field[1]} getInput={onInputChange} />
                 })
             }
             <Button variant="success" type="submit" onClick={handler}>
                 Submit
             </Button>
-			<Button variant="primary" type="submit" className="ml-auto" onClick={toggler}>
+            <Button variant="primary" type="submit" className="ml-auto" onClick={toggler}>
                 Sign up?
             </Button>
         </Form>

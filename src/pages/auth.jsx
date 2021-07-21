@@ -1,13 +1,13 @@
-import React, {useState, useContext} from 'react';
-import {AuthStateContext} from '../contexts/auth';
+import React, { useState, useContext } from 'react';
+import { AuthStateContext } from '../contexts/auth';
 import Loading from '../components/loading';
 import { useHistory } from 'react-router-dom';
 import { SignIn, SignUp } from '../components/authComponent';
-import {Row, Col} from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 
 const AuthPage = (props) => {
     const history = useHistory();
-    const {loading, isLoggedIn} = useContext(AuthStateContext);
+    const { loading, isLoggedIn } = useContext(AuthStateContext);
     const [newUser, setNewUser] = useState(true);
 
     isLoggedIn && history.push('/dashboard');
@@ -19,7 +19,7 @@ const AuthPage = (props) => {
     const message = <center>
         <h1>Sign in for easier access to medical care</h1>
     </center>;
-    if (loading){
+    if (loading) {
         return <Loading />
     }
     return (
