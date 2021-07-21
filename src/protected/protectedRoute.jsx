@@ -5,20 +5,20 @@ import Loading from "../components/loading";
 import {
   AuthStateContext,
   AuthDispatchContext,
-  requestConsult,
 } from "../contexts/auth";
+import { toggleConsult, UsersDispatchContext } from "../contexts/users";
 import { Route, Redirect } from "react-router-dom";
 
 const ProtectedRoute = ({ component: Component, ...rest }) => {
   const { isLoggedIn, loaded, user } = useContext(AuthStateContext);
-  const dispatch = useContext(AuthDispatchContext);
+  const userDispatch = useContext(UsersDispatchContext);
 
   const request = () => {
     let newuser = {
       ...user,
-      toBeConsulted: true,
+      toBeConsulted: !user.toBeConsulted,
     };
-    requestConsult(dispatch, newuser);
+    toggleConsult(userDispatch, user._id, newuser);
   };
 
   if (!loaded) {

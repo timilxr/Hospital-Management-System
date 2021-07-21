@@ -181,7 +181,7 @@ export const toggleConsult = async (dispatch, userId, user) => {
         dispatch({
             type: "USERS_FAILURE"
         });
-        console.log(`Error consulting user: err`)
+        console.log(`Error consulting user: ${err}`)
     })
 };
 export const removeUser = async (dispatch, userId) => {
