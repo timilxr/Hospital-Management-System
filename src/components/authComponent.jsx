@@ -61,9 +61,21 @@ export const SignUp = ({ toggler, ...props }) => {
 
     const handler = async (e) => {
         try {
-            await addUser(userDispatch, data);
-            setMsg('you may now log in');
+            const values = Object.values(data);
+            let status = true;
+            values.map(val => {
+                if (val === '') {
+                    return status = false
+                }
+            });
+            if (status === true) {
+                await addUser(userDispatch, data);
+                setMsg('you may now log in');
+            } else {
+                setMsg('Error please try again');
+            }
         } catch (error) {
+            setMsg('Error please try again');
             console.error(error);
         }
         console.log(data);
@@ -71,12 +83,12 @@ export const SignUp = ({ toggler, ...props }) => {
         e.preventDefault();
     };
 
-    const showMe = () => {
-        alert(data);
+    const showMe = (e) => {
+        e.preventDefault()
     };
 
     return (
-        <Form noValidate validated={validated} className='text-left my-5 pt-5' onSubmit={showMe}>
+        <Form noValidate validated={validated} className='text-left my-5 p-5' onSubmit={showMe}>
             {
                 msg && !errors ? <Alert variant="success">{msg}</Alert> :
                     (msg ? <Alert variant="danger">{msg}</Alert> : <Alert variant="primary">please fill the form</Alert>)
@@ -89,11 +101,11 @@ export const SignUp = ({ toggler, ...props }) => {
                     return <Input key={field[0]} errors={errors} data={field[1]} getInput={onInputChange} />
                 })
             }
-            <Button variant="success" type="submit" onClick={handler}>
+            <Button variant="success" type="submit" className="me-5 mt-3" onClick={handler}>
                 Submit
             </Button>
-            <Button variant="primary" type="submit" className="ml-auto" onClick={toggler}>
-                Sign in?
+            <Button variant="primary" type="submit" className="ms-0 ms-md-5 mt-3" onClick={toggler}>
+                Sign in instead?
             </Button>
         </Form>
     )
@@ -133,20 +145,37 @@ export const SignIn = ({ toggler, ...props }) => {
         setValidated(false);
     };
 
-    const handler = (e) => {
+    const handler = async (e) => {
         // const newdata = JSON.stringify(data);
-        signIn(dispatch, data);
-        console.log(data);
+        try {
+            const values = Object.values(data);
+            let status = true;
+            values.map(val => {
+                if (val === '') {
+                    return status = false
+                }
+            });
+            if (status === true) {
+                await signIn(dispatch, data);
+                setMsg('Sign In unSuccessful');
+            } else {
+                setMsg('Error please try again');
+            }
+        } catch (error) {
+            setMsg('Error please try again');
+            console.error(error);
+        }
+        // console.log(data);
         setValidated(false);
         e.preventDefault();
     };
 
-    const showMe = () => {
-        alert(data);
+    const showMe = (e) => {
+        e.preventDefault();
     };
 
     return (
-        <Form noValidate validated={validated} className='text-left my-5 pt-5' onSubmit={showMe}>
+        <Form noValidate validated={validated} className='text-left my-5 p-5' onSubmit={showMe}>
             {
                 msg && !errors ? <Alert variant="success">{msg}</Alert> :
                     (msg ? <Alert variant="danger">{msg}</Alert> : <Alert variant="primary">please fill the form</Alert>)
@@ -159,11 +188,11 @@ export const SignIn = ({ toggler, ...props }) => {
                     return <Input key={field[0]} errors={errors} data={field[1]} getInput={onInputChange} />
                 })
             }
-            <Button variant="success" type="submit" onClick={handler}>
+            <Button variant="success" type="submit" className="me-4 me-md-5 mt-3" onClick={handler}>
                 Submit
             </Button>
-            <Button variant="primary" type="submit" className="ml-auto" onClick={toggler}>
-                Sign up?
+            <Button variant="primary" type="button" className="ms-0 ms-md-5 mt-3" onClick={toggler}>
+                Sign up instead?
             </Button>
         </Form>
     )

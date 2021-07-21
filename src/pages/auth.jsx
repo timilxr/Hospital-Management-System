@@ -16,7 +16,7 @@ const AuthPage = (props) => {
         setNewUser(!newUser);
     }
 
-    const message = <center>
+    const message = <center className='pt-5'>
         <h1>Sign in for easier access to medical care</h1>
     </center>;
     if (loading) {
@@ -27,7 +27,9 @@ const AuthPage = (props) => {
             <h1>Welcome to HOS</h1>
             <Row>
                 <Col sm={true}>
+                    <div className='pt-5 my-5'>
                     {message}
+                    </div>
                 </Col>
                 <Col sm={true}>
                     {newUser ? <SignUp toggler={handleUser} /> : <SignIn toggler={handleUser} />}
