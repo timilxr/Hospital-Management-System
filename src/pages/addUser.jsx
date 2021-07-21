@@ -1,60 +1,64 @@
 import React, {useState, useEffect, useContext} from 'react';
-import { UsersDispatchContext, UsersStateContext, getUsers } from '../contexts/users';
-import { DrugsDispatchContext, DrugsStateContext, getDrug } from '../contexts/users';
+import {UsersStateContext, UsersDispatchContext, addUser, getUsers} from '../contexts/users';
+import {AuthStateContext} from '../contexts/auth';
 import Loading from '../components/loading';
-import axios from 'axios';
-import {useParams} from 'react-router-dom';
-import { Form, Button, Alert } from 'react-bootstrap';
+import { Form, Alert, Button } from 'react-bootstrap';
 import Input from '../components/form-controls/input';
-import Select from '../components/form-controls/input';
+import Select from '../components/form-controls/select';
 import Check from '../components/form-controls/check';
+import { useHistory } from 'react-router-dom';
 
-
-const EditDrug = ({...props}) => {
-    const {id} = useParams();
-    const dispatch = useContext(DrugsDispatchContext);
-    const {users} = useContext(UsersStateContext);
-    const doctors = users.filter(user=>user.role === 'doctor');
-    const patients = users.filter(user=>user.role === 'patient');
-
+const AddUser = (props) => {
+    const history = useHistory();
     const userDispatch = useContext(UsersDispatchContext);
-    const [loading, setLoading] = useState(true);
-    // getUser(dispatch, id);
-    const {drug, loaded} = useContext(DrugsStateContext);
-    const [data, setData] = useState({
-        ...drug
-    });
+    // const { isLoggedIn} = useContext(AuthStateContext);
+    const {loading, users} = useContext(UsersStateContext);
+    const [newUser, setNewUser] = useState(true);
+    useEffect(()=>{
+            getUsers(userDispatch);
+        }, []);
+        
+        !props.user.isAdmin && history.push('/dashboard');
+        const [data, setData] = useState({
+            fullName: '',
+            email: '',
+            phone: Number,
+            role: '',
+            isAdmin: false,
+            password: ''
+        });
+
     const formData = {
         name: {
             type: 'text',
             label: 'Fullname',
             name: 'fullName',
-            value: data ? data.fullName : ''
+            value: ''
         },
         email: {
             type: 'email',
             label: 'Email',
             name: 'email',
-            value: data ? data.email : ''
+            value: ''
         },
         phone: {
             type: 'tel',
             label: 'Phone',
             name: 'phone',
-            value: data ? data.phone : ''
+            value: ''
         },
         role: {
             type: 'select',
-            label: 'Select role',
+            label: 'Role',
             name: 'role',
-            value: data ? data.role : '',
-            options: ['patient', 'doctor', 'nurse', 'accountant']
+            value: '',
+            options: ['doctor', 'nurse', 'accountant', 'patient']
         },
         isAdmin: {
             type: 'check',
             label: 'Admin',
             name: 'isAdmin',
-            value: data ? data.isAdmin : ''
+            checked: data ? data.isAdmin : ''
         },
         password: {
             type: 'password',
@@ -64,8 +68,13 @@ const EditDrug = ({...props}) => {
         }
     };
     const [errors, setErrors] = useState({});
-    const [msg, setMsg] = useState('');
+    const [msg, setMsg] = useState(null);
     const [validated, setValidated] = useState(false);
+    // const authdispatch = useContext(AuthDispatchContext);
+
+    if (loading){
+        return <Loading />
+    }
 
     const onInputChange = (e) => {
         const {name, value} = e.target;
@@ -75,31 +84,40 @@ const EditDrug = ({...props}) => {
                 [name]: value
             };
         });
-        // console.log(e.target.value)
         setValidated(false);
     };
-
-    useEffect(()=>{
-        getDrug(dispatch, id);
-        getUsers(userDispatch);
-        setLoading(false);
-    }, [])
 	
-    const handler = (e) => {
-        // console.log("state");
-        // alert(data);
+    const handler = async (e) => {
+        try {
+            let status = false;
+            users.map(user=>{
+                if (user.email === data.email){
+                    setMsg('Error: Email already in use')
+                    return status = true;
+                } else if (user.phone === data.phone){
+                    setMsg('Error: Phone number already in use')
+                    return status = true
+                }
+            });
+            
+            if (status === false) {
+                await addUser(userDispatch, data)  
+                console.log('me')
+                setMsg('you may now log in')
+            return 0}
+            else return 1;
+            
+        } catch (error) {
+            console.error(error);
+        }
         console.log(data);
         setValidated(true);
         e.preventDefault();
     };
 
     const showMe = () => {
-        alert(data);
+        alert(msg);
     };
-
-    if(!loaded || loading){
-        return <Loading />
-    }
 
     return(
         <Form noValidate validated={validated} className='text-left my-5 pt-5' onSubmit={showMe}>
@@ -109,20 +127,20 @@ const EditDrug = ({...props}) => {
             }
             {
                 Object.entries(formData).map(field => {
-                    if(field[1].type === 'select'){
+                    if (field[1].type === 'select') {
                         return <Select key={field[0]} errors={errors} data={field[1]} getInput={onInputChange} />
                     }
-                    else if(field[1].type === 'check'){
+                    else if (field[1].type === 'check') {
                         return <Check key={field[0]} errors={errors} data={field[1]} getInput={onInputChange} />
                     }
                     return <Input key={field[0]} errors={errors} data={field[1]} getInput={onInputChange}/>
                 })
             }
-            <Button variant="success" type="submit" onClick={handler}>
-                Submit
+            <Button variant="success" type="submit" className='mt-3' onClick={handler}>
+                Add user
             </Button>
         </Form>
     )
 }
 
-export default EditDrug;
+export default AddUser;

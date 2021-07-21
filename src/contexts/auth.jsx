@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useReducer } from "react";
+import React, { createContext, useState, useEffect, useReducer } from "react";
 import useLocalStorage from "../action/useLocalStorage";
 import axios from "axios";
 import _get from 'lodash.get';
@@ -21,7 +21,7 @@ const reducers = (state, { type, payload }) => {
         loading: true,
       };
     case 'TOGGLE_CONSULT':
-      return{
+      return {
         ...state,
         loading: false,
         loaded: true,
@@ -33,7 +33,7 @@ const reducers = (state, { type, payload }) => {
         ...state,
         loading: false,
         loaded: true,
-        isLoggedIn: true,
+        isLoggedIn: payload.isLoggedIn,
         user: payload.user
       };
     case "LOGOUT_SUCCESS":
@@ -58,14 +58,49 @@ const reducers = (state, { type, payload }) => {
 };
 
 
-export const signIn = (dispatch, userData) => {
-  localStorage.setItem("user", JSON.stringify(userData));
-  return dispatch({
-    type: "LOGIN_SUCCESS",
-    payload: {
-      user: userData
-    }
-  });
+export const signIn = async (dispatch, userData) => {
+  // const data = JSON.parse(userData);
+  let output;
+  try {
+    await axios.post('/users/verify', userData)
+      .then(res => {
+        console.log(res);
+        output = res;
+        if (output.data.info) {
+          console.log(output);
+          try {
+            localStorage.setItem("Users3", JSON.stringify(output.data.user));
+            console.log('hi');
+          } catch (error) {
+            console.log(error);
+            return dispatch({
+              type: "AUTH_FAILURE"
+            });
+          }
+          return dispatch({
+            type: "LOGIN_SUCCESS",
+            payload: {
+              isLoggedIn: output.data.info,
+              user: output.data.user
+            }
+          });
+        }
+        return dispatch({
+          type: "AUTH_FAILURE"
+        });
+      }).catch(err => {
+        console.log('me', err);
+        return dispatch({
+          type: "AUTH_FAILURE"
+        });
+      });
+    // console.log(timi);
+  } catch (error) {
+    console.log(error);
+    return dispatch({
+      type: "AUTH_FAILURE"
+    });
+  }
 };
 
 export const signOut = (dispatch) => {
@@ -79,32 +114,55 @@ export const requestConsult = async (dispatch, user) => {
   // dispatch({
   //     type: "REQUEST_USERS"
   // });
-      dispatch({
-          type: "TOGGLE_CONSULT",
-          payload: {
-              user: user
-          }
-      });
+  dispatch({
+    type: "TOGGLE_CONSULT",
+    payload: {
+      user: user
+    }
+  });
 };
 
 const AuthProvider = ({ children }) => {
-  const [info, setInfo] = useLocalStorage("user", null);
-  let output;
-  try {
-    output = axios.post('/users/verify', info);
-  } catch (error) {
-    output = false;
-    console.log(error);
-  }
-  const newUserState = {
-    ...initialState,
-    user: info,
-    isLoggedIn: output.info
-  }
-  const [state, dispatch] = useReducer(reducers, newUserState);
-  useEffect(()=>{
-    setInfo(state.user);
-  }, [state.isLoggedIn])
+  // const [newUserState, setNewUserState] = useState(initialState);
+  const [state, dispatch] = useReducer(reducers, initialState);
+  let info = localStorage.getItem("Users3");
+  // console.log(info);
+
+  useEffect(() => {
+    let output, newState;
+    if (info) {
+      info = JSON.parse(info);
+      try {
+        axios.post('/users/verify', info).then(res => {
+          output = res.data;
+          // console.log(output);
+          newState = {
+            ...initialState,
+            user: output.info ? output.user : null,
+            isLoggedIn: output.info,
+            loaded: true
+          };
+          dispatch({type: 'LOGIN_SUCCESS',payload: {...newState}});
+          // setNewUserState(newState);
+        }).catch(err => {
+          dispatch({type: 'AUTH_FAILURE'});
+          console.log(err);
+        })
+      } catch (error) {
+        output = false;
+          dispatch({type: 'AUTH_FAILURE'});
+          console.log(error);
+      }
+    }
+    else {
+      dispatch({type: 'AUTH_FAILURE'});
+    }
+
+  }, [])
+  // console.log(state);
+  // useEffect(()=>{
+  //   window.localStorage.setItem("Users3",state.user);
+  // }, [state.isLoggedIn])
 
   return (
     <AuthDispatchContext.Provider value={dispatch}>

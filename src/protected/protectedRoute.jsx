@@ -10,13 +10,12 @@ import {
 import { Route, Redirect } from "react-router-dom";
 
 const ProtectedRoute = ({ component: Component, ...rest }) => {
-  const { isLoggedIn, loading, user } = useContext(AuthStateContext);
+  const { isLoggedIn, loaded, user } = useContext(AuthStateContext);
   const dispatch = useContext(AuthDispatchContext);
   //  useEffect(()=>{
   //      authenticateUser(dispatch);
   //  }, [dispatch])
 
-  console.log(isLoggedIn);
   const request = () => {
     let newuser = {
       ...user,
@@ -24,13 +23,15 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
     };
     requestConsult(dispatch, newuser);
   };
-
-  if (loading) {
+  
+  if (!loaded) {
+    // console.log(isLoggedIn, 'me');
     return <Loading />;
   }
-
+  
+  // console.log(isLoggedIn);
   return <Route
-    {...rest}
+  {...rest}
     render={(props) => {
       if (isLoggedIn) {
         return (
@@ -39,7 +40,7 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
               <Col xs={5} md={3} variant="dark" className="bg-dark px-0">
                 <DashNav user={user} />
               </Col>
-              <Col className="bg-light bg-gradient ml-0">
+              <Col xs={7} md={9} className="bg-light bg-gradient ml-0">
                 <div className="p-2 pt-3 pt-md-5">
                   <h3 className="mb-3" style={{ textTransform: "capitalize" }}>
                     Welcome {user.name}

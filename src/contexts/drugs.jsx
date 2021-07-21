@@ -1,4 +1,4 @@
-import React, { createContext, useReducer } from "react";
+import React, { createContext, useReducer, useState, useEffect } from "react";
 import axios from "axios";
 
 const initialState = {
@@ -37,14 +37,14 @@ const reducers = (initialState, { type, payload }) => {
                 ...initialState,
                 loading: false,
                 loaded: true,
-                drug: payload.drug,
+                drugs: payload.drugs,
             };
-        case "ADD_NURSE_SUCCESSFUL":
+        case "ADD_DRUG_SUCCESSFUL":
             return {
                 ...initialState,
                 loading: false,
                 loaded: true,
-                nursesId: payload.nursesId,
+                drug: payload.drug,
             };
         case "ADD_PATIENT_SUCCESSFUL":
             return {
@@ -123,6 +123,32 @@ export const getDrugs = async (dispatch) => {
             console.log(`Error getting drugs: err`)
         })
 };
+export const getDrug = async (dispatch, drugId) => {
+    // dispatch({
+    //     type: "REQUEST_DRUGS"
+    // });
+    // await dispatch({
+    //         type: "GET_DRUGS_SUCCESSFUL",
+    //         payload: {
+    //             drugs: []
+    //         }
+    //     });
+    await axios.get(`http://localhost:5000/prescriptions/${drugId}`)
+        .then(res => {
+            dispatch({
+                type: "GET_DRUG_SUCCESSFUL",
+                payload: {
+                    drug: res.data
+                }
+            })
+        })
+        .catch(err => {
+            dispatch({
+                type: "GET_DRUGS_FAILURE"
+            });
+            console.log(`Error getting drug: err`)
+        })
+};
 
 // export const addDoctor = async (dispatch, user) => {
 //     dispatch({
@@ -153,7 +179,7 @@ export const updateDrug = async (dispatch, drugId, drug) => {
             dispatch({
                 type: "UPDATE_DRUG_SUCCESSFUL",
                 payload: {
-                    drug: res.data
+                    drugs: res.data
                 }
             })
         })
@@ -164,16 +190,17 @@ export const updateDrug = async (dispatch, drugId, drug) => {
             console.log(`Error adding patient: err`)
         })
 };
-export const addNurse = async (dispatch, user) => {
+export const addDrug = async (dispatch, drug) => {
     dispatch({
         type: "REQUEST_DRUGS"
     });
-    await axios.post("api", user)
+    console.log(drug, 'me');
+    await axios.post("http://localhost:5000/prescriptions/", drug)
         .then(res => {
             dispatch({
-                type: "ADD_NURSE_SUCCESSFUL",
+                type: "ADD_DRUG_SUCCESSFUL",
                 payload: {
-                    nursesId: res.data.nurse
+                    drug: res.data
                 }
             })
         })
@@ -181,7 +208,7 @@ export const addNurse = async (dispatch, user) => {
             dispatch({
                 type: "GET_DRUGS_FAILURE"
             });
-            console.log(`Error adding nurse: err`)
+            console.log(`Error adding drug: ${err}`)
         })
 };
 export const updateFee = async (dispatch, drugs) => {
@@ -264,7 +291,29 @@ export const removeDrug = async (dispatch, drugId) => {
 };
 
 const DrugsProvider = ({ children }) => {
+    const [drugs, setDrugs] = useState(initialState);
     const [state, dispatch] = useReducer(reducers, initialState);
+  
+  useEffect(()=>{
+    axios.get("http://localhost:5000/prescriptions")
+    .then(res=>{
+      dispatch({
+          type: 'GET_DRUGS_SUCCESSFUL',
+          payload:{
+              drugs: res.data
+          }
+      })
+    })
+    .catch(err=>{
+    //   setDrugs({
+    //     loading: false,
+    //     loaded: false,
+    //     drugs: null,
+    //     drug: null
+    //   });
+      console.log(`Error getting drugs: ${err}`)
+    })
+  }, [])
 
     return (
         <DrugsDispatchContext.Provider value={dispatch}>

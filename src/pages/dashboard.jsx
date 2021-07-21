@@ -13,57 +13,80 @@ const Dashboard = (props) => {
     const authState = useContext(AuthStateContext);
     const {drugs, loaded: drugLoaded}= useContext(DrugsStateContext);
     const {users, loaded: userLoaded} = useContext(UsersStateContext);
-    const doctors = users.filter(user=>user.role === 'doctor');
-    const patients = users.filter(user=>user.role === 'patient');
-    const nurses = users.filter(user=>user.role === 'nurse');
-    const accountants = users.filter(user=>user.role === 'accountant');
-    const toBeConsulteds = users.filter(user=>user.toBeConsulted === true);
-    const notCheckeds = users.filter(user=>user.checked === false);
+    let doctors, patients, nurses, accountants, toBeConsulteds, notCheckeds, paids, myDrugs;
+    if (userLoaded && drugLoaded){
+        doctors = users.filter(user=>user.role === 'doctor');
+    patients = users.filter(user=>user.role === 'patient');
+    nurses = users.filter(user=>user.role === 'nurse');
+    accountants = users.filter(user=>user.role === 'accountant');
+    toBeConsulteds = users.filter(user=>user.toBeConsulted === true);
+    notCheckeds = drugs.filter(drug=>drug.checked === false);
+    paids = drugs.filter(drug=>(drug.totalPricePaid != 0) && (drug.totalPricePaid === drug.totalPrice));
+    myDrugs = drugs.filter(drug=>drug.patientId === props.user._id);
+    }
     console.log(users);
     console.log(drugs);
 
     const content = [
         {
-            subtitle: "Users",
+            subtitle: "All users",
             bg: "primary",
             content: users,
-            route: '/users'
+            route: '/users/'
         },
         {
             subtitle: "Doctors",
             bg: "primary",
             content: doctors,
-            route: '/users'
+            route: '/users/doctors'
         },
         {
             subtitle: "Patients",
             bg: "primary",
             content: patients,
-            route: '/users'
+            route: '/users/patients'
         },
         {
-            subtitle: "To be Consulted",
+            subtitle: "To Be Consulted",
             bg: "primary",
             content: toBeConsulteds,
-            route: '/users'
+            route: '/users/tobeconsulted'
         },
         {
             subtitle: "Nurses",
             bg: "primary",
             content: nurses,
-            route: '/users'
+            route: '/users/nurses'
         },
         {
             subtitle: "Accountants",
             bg: "primary",
             content: accountants,
-            route: '/users'
+            route: '/users/accountants'
         },
         {
-            subtitle: "priscriptions",
+            subtitle: "Not Checked Prescriptions",
+            bg: "danger",
+            content: notCheckeds,
+            route: '/prescriptions/notchecked'
+        },
+        {
+            subtitle: "Paid Prescriptions",
             bg: "success",
+            content: paids,
+            route: '/prescriptions/paid'
+        },
+        {
+            subtitle: "All Prescriptions",
+            bg: "primary",
             content: drugs,
-            route: '/priscriptions'
+            route: '/prescriptions'
+        },
+        {
+            subtitle: "My Prescriptions",
+            bg: "primary",
+            content: myDrugs,
+            route: '/prescriptions/me'
         },
     ];
 
@@ -80,15 +103,36 @@ const Dashboard = (props) => {
         <div className='container-fluid'>
                         <Row className="mt-3 mt-md-5">
                             {content.map(item=>{
-                                if (props.user.role === 'patient' && item.subtitle !== 'priscriptions'){
-                                    return <></>;
-                                } 
-                                // else if (props.user.role === 'patient' && item.subtitle != 'Prescription')
+                                if (props.user.role === 'patient' && (item.subtitle === 'My Prescriptions')){
                                     return(
-                                    <Col xs={12} sm={3} md={4} className='p-0' key={item.subtitle}>
+                                        <Col xs={12} sm={3} md={4} className='p-0 pb-3 p-md-3' key={item.subtitle}>
                                         <DashCard message={item} />
                                     </Col>
-                                )
+                                    )
+                                } 
+                                if (props.user.role === 'accountant' && (item.subtitle === 'All Prescriptions' || item.subtitle === 'My Prescriptions' || item.subtitle === 'Paid Prescriptions' || item.subtitle === 'Not Checked Prescriptions')){
+                                    return(
+                                        <Col xs={12} sm={3} md={4} className='p-0 pb-3 p-md-3' key={item.subtitle}>
+                                        <DashCard message={item} />
+                                    </Col>
+                                    )
+                                } 
+                                if (props.user.role === 'doctor' && (item.subtitle === 'All Prescriptions' || item.subtitle === 'My Prescriptions' || item.subtitle === 'Patients' || item.subtitle === 'To Be Consulted')){
+                                    return(
+                                        <Col xs={12} sm={3} md={4} className='p-0 pb-3 p-md-3' key={item.subtitle}>
+                                        <DashCard message={item} />
+                                    </Col>
+                                    )
+                                } 
+                                if (props.user.isAdmin === true){
+                                    return(
+                                        <Col xs={12} sm={3} md={4} className='p-0 pb-3 p-md-3' key={item.subtitle}>
+                                        <DashCard message={item} />
+                                    </Col>
+                                    )
+                                } 
+                                return <></>;
+                                // else if (props.user.role === 'patient' && item.subtitle != 'Prescription')
                             })}
                         </Row>
         </div>

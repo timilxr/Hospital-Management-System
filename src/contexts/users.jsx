@@ -225,7 +225,7 @@ const UsersProvider = ({ children }) => {
         users: null,
         user: null
       });
-      console.log(`Error getting users: err`)
+      console.log(`Error getting users: ${err}`)
     })
   }, [])
   

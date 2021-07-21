@@ -13,7 +13,7 @@ const MyTable = (props) => {
   return length < 1 ? (
     <h1>Loading</h1>
   ) : (
-    <Table striped bordered hover responsive variant="dark" className="mt-4">
+    <Table striped bordered hover responsive variant="dark" className="container-fluid m-0 p-0">
       <thead>
         <tr>
           <th>#</th>
@@ -22,6 +22,7 @@ const MyTable = (props) => {
           ))}
           {props.edFunc ? <th></th> : ""}
           {props.delFunc ? <th></th> : ""}
+          {props.consult ? <th></th> : ""}
           <th></th>
         </tr>
       </thead>
@@ -37,7 +38,13 @@ const MyTable = (props) => {
                 } else if (Array.isArray(val[1])) {
                   return (
                     <td key={val[0]}>
-                      {val[1].map((index, detail) => `${index}. ${detail}`)}
+                      {val[1].map((detail, index) => {
+                      Object.values(detail).map(valu => {
+                        console.log(valu);
+                        return <span>{valu}</span>
+                      })
+                      // )
+                      })}
                     </td>
                   );
                 }
@@ -45,7 +52,25 @@ const MyTable = (props) => {
               })}
 
               {/* <td>{value.userType? 'Admin' : 'customer'}</td> */}
-              {props.edFunc && (
+              {props.consult && (
+                <td>
+                  <Link to={`/consulting/${value._id}`}>
+                    <Button variant="primary" type="button">
+                      Consult
+                    </Button>
+                  </Link>
+                </td>
+              )}
+              {props.check && (
+                <td>
+                  <Link to={`/check/${value._id}`}>
+                    <Button variant="primary" type="button">
+                      Check
+                    </Button>
+                  </Link>
+                </td>
+              )}
+              {props.edFunc ? (
                 <td>
                   <Link to={`/${props.edFunc}/${value._id}`}>
                     <Button variant="info" type="button">
@@ -53,7 +78,7 @@ const MyTable = (props) => {
                     </Button>
                   </Link>
                 </td>
-              )}
+              ): ''}
               {props.delFunc && (
                 <td>
                   <Button
@@ -65,7 +90,7 @@ const MyTable = (props) => {
                   </Button>
                 </td>
               )}
-              {props.consult && (
+              {/* {props.consult && (
                 <td>
                   <Button
                     variant="primary"
@@ -75,9 +100,9 @@ const MyTable = (props) => {
                     Consult
                   </Button>
                 </td>
-              )}
+              )} */}
             </tr>
-          );
+          )
         })}
       </tbody>
     </Table>

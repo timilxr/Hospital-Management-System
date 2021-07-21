@@ -9,9 +9,6 @@ const AuthPage = (props) => {
     const history = useHistory();
     const {loading, isLoggedIn} = useContext(AuthStateContext);
     const [newUser, setNewUser] = useState(true);
-    // useEffect(()=>{
-    //     authenticateUser(authDispatch);
-    // }, [authDispatch]);
 
     isLoggedIn && history.push('/dashboard');
 
@@ -20,7 +17,7 @@ const AuthPage = (props) => {
     }
 
     const message = <center>
-        <h1>Sign in to enjoy our services</h1>
+        <h1>Sign in for easier access to medical care</h1>
     </center>;
     if (loading){
         return <Loading />

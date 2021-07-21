@@ -22,10 +22,10 @@ const DashCard = (props) => {
                 </Row>
             </Card.Body>
             <Card.Footer>
-                <Card.Link href="#" className='mr-auto'>Card Link</Card.Link>
+                {/* <Card.Link href="#" className='mr-auto'>Card Link</Card.Link> */}
                 <Card.Link href="#">
                     <Link to={props.message.route}>
-                        <Button variant="primary">View</Button>
+                        <Button variant="primary" className='ms-5'>View</Button>
                     </Link>
                 </Card.Link>
             </Card.Footer>

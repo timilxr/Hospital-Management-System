@@ -48,7 +48,7 @@ const EditUser = ({...props}) => {
             type: 'check',
             label: 'Admin',
             name: 'isAdmin',
-            value: data ? data.isAdmin : ''
+            checked: data ? data.isAdmin : ''
         },
         password: {
             type: 'password',

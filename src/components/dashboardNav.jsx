@@ -1,35 +1,47 @@
-import React from 'react';
-import { Navbar as div, Nav } from 'react-bootstrap';
+import React, {useContext} from 'react';
+// import { Redirect } from 'react-router-dom';
+import { Navbar as div, Nav, Button } from 'react-bootstrap';
+import { signOut, AuthDispatchContext } from '../contexts/auth';
 import { Link } from 'react-router-dom';
 
-const DashNav = (props) => {
+const DashNav = () => {
+    const dispatch = useContext(AuthDispatchContext);
+
+    const logout = async () => {
+        await signOut(dispatch);
+    }
+
     return (
         <div bg="dark" className='position-sticky text-white top-0 start-0 border-top border-secondary'>
             {/* <div className='p-3'> */}
-                <Nav className='flex-column'><Link to='/' class="text-decoration-none">
+                <Nav className='flex-column'>
                 <Nav.Link>
+                    <Link to='/dashboard' className="text-decoration-none">
                 <h3>Dashboard</h3>
+                    </Link>
                 </Nav.Link>
-                </Link>
                 </Nav>
             {/* </div> */}
             <Nav defaultActiveKey="/home" className="flex-column">
                 
                 <Nav.Link>
-                <Link to='/' class="text-decoration-none">Active
+                <Link to='/' className="text-decoration-none">Active
                 </Link>
                 </Nav.Link>
                 <Nav.Link>
-                <Link to='/prescription' class="text-decoration-none">Prescription
+                <Link to='/prescription' className="text-decoration-none">Prescription
                 </Link>
                 </Nav.Link>
                 <Nav.Link>
-                <Link to='/users' class="text-decoration-none">Users
+                <Link to='/users' className="text-decoration-none">Users
                 </Link>
                 </Nav.Link>
                 <Nav.Link>
-                <Link to='/' class="text-decoration-none" disabled>All
+                <Link to='/' className="text-decoration-none" disabled>All
                 </Link>
+                </Nav.Link>
+                <Nav.Link>
+                <Button variant='danger' type='button' onClick={logout}>Logout</Button>
                 </Nav.Link>
             </Nav>
 

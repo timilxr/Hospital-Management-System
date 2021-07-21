@@ -134,7 +134,9 @@ export const SignIn = ({toggler, ...props}) => {
     };
 
     const handler = (e) => {
+        // const newdata = JSON.stringify(data);
         signIn(dispatch, data);
+        console.log(data);
         setValidated(false);
         e.preventDefault();
     };
