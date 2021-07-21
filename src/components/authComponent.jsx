@@ -35,7 +35,7 @@ export const SignUp = ({toggler, ...props}) => {
         }
     };
     const [data, setData] = useState({
-        name: '',
+        fullName: '',
         email: '',
         phone: Number,
 		role: 'patient',

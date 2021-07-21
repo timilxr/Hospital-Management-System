@@ -43,7 +43,7 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
               <Col xs={7} md={9} className="bg-light bg-gradient ml-0">
                 <div className="p-2 pt-3 pt-md-5">
                   <h3 className="mb-3" style={{ textTransform: "capitalize" }}>
-                    Welcome {user.name}
+                    Welcome {user.fullName}
                   </h3>
                   {!user.toBeConsulted ? (
                     <Button variant="info" onClick={request}>

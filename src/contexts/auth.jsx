@@ -66,7 +66,7 @@ export const signIn = async (dispatch, userData) => {
       .then(res => {
         console.log(res);
         output = res;
-        if (output.data.info) {
+        if (output.data.info === true) {
           console.log(output);
           try {
             localStorage.setItem("Users3", JSON.stringify(output.data.user));
@@ -126,16 +126,17 @@ const AuthProvider = ({ children }) => {
   // const [newUserState, setNewUserState] = useState(initialState);
   const [state, dispatch] = useReducer(reducers, initialState);
   let info = localStorage.getItem("Users3");
-  // console.log(info);
+  console.log(info);
 
   useEffect(() => {
     let output, newState;
     if (info) {
       info = JSON.parse(info);
+      console.log(info);
       try {
         axios.post('https://hospitalms-backend.herokuapp.com/users/verify', info).then(res => {
           output = res.data;
-          // console.log(output);
+          console.log(res);
           newState = {
             ...initialState,
             user: output.info ? output.user : null,
