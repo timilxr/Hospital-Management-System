@@ -1,13 +1,12 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import { updateUser, UsersDispatchContext } from "../contexts/users";
+// import { updateUser, UsersDispatchContext, UsersStateContext } from "../contexts/users";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
 
 const MyTable = (props) => {
   const reKeys = Object.keys(props.data[0]);
   const length = Number(props.data.length);
-  const dispatch = useContext(UsersDispatchContext);
   return length < 1 ? (
     <h1>Loading</h1>
   ) : (
@@ -44,7 +43,9 @@ const MyTable = (props) => {
                       })}
                     </td>
                   );
-                }
+                } else if (typeof val[1] === 'boolean') {
+                  return val[1] === true ? <td key={val[0]}>Yes</td> : <td key={val[0]}>No</td>
+                } 
                 return <td key={val[0]}>{val[1]}</td>;
               })}
 

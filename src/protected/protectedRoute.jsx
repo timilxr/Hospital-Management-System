@@ -32,11 +32,11 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
         return (
           <div className="container-fluid">
             <Row>
-              <Col xs={5} md={3} variant="dark" className="bg-dark px-0">
+              {/* <Col xs={5} sm={3} md={3} variant="dark" className="bg-dark px-0">
                 <DashNav user={user} />
-              </Col>
-              <Col xs={7} md={9} className="bg-light bg-gradient ml-0">
-                <div className="p-2 pt-3 pt-md-5">
+              </Col> */}
+              {/* <Col xs={7} sm={9} md={9} className="bg-light bg-gradient ml-0"> */}
+                <div className="p-2 pt-3 pt-md-5 ps-md-4">
                   <h3 className="mb-3" style={{ textTransform: "capitalize" }}>
                     Welcome {user.fullName}
                   </h3>
@@ -49,7 +49,7 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
                   )}
                   <Component {...props} user={user} />
                 </div>
-              </Col>
+              {/* </Col> */}
             </Row>
           </div>
         );

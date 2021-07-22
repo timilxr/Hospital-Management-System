@@ -104,28 +104,28 @@ const Dashboard = (props) => {
                 {content.map(item => {
                     if (props.user.role === 'patient' && (item.subtitle === 'My Prescriptions')) {
                         return (
-                            <Col xs={12} sm={3} md={4} className='p-0 pb-3 p-md-3' key={item.subtitle}>
+                            <Col xs={6} sm={6} md={4} className='p-0 px-2 pb-3 p-md-3' key={item.subtitle}>
                                 <DashCard message={item} />
                             </Col>
                         )
                     }
                     if (props.user.role === 'accountant' && (item.subtitle === 'All Prescriptions' || item.subtitle === 'My Prescriptions' || item.subtitle === 'Paid Prescriptions' || item.subtitle === 'Not Checked Prescriptions')) {
                         return (
-                            <Col xs={12} sm={3} md={4} className='p-0 pb-3 p-md-3' key={item.subtitle}>
+                            <Col xs={6} sm={6} md={4} className='p-0 px-2 pb-3 p-md-3' key={item.subtitle}>
                                 <DashCard message={item} />
                             </Col>
                         )
                     }
                     if (props.user.role === 'doctor' && (item.subtitle === 'All Prescriptions' || item.subtitle === 'My Prescriptions' || item.subtitle === 'Patients' || item.subtitle === 'To Be Consulted')) {
                         return (
-                            <Col xs={12} sm={3} md={4} className='p-0 pb-3 p-md-3' key={item.subtitle}>
+                            <Col xs={6} sm={6} md={4} className='p-0 px-2 pb-3 p-md-3' key={item.subtitle}>
                                 <DashCard message={item} />
                             </Col>
                         )
                     }
                     if (props.user.isAdmin === true) {
                         return (
-                            <Col xs={12} sm={3} md={4} className='p-0 pb-3 p-md-3' key={item.subtitle}>
+                            <Col xs={6} sm={6} md={4} className='p-0 px-2 pb-3 p-md-3' key={item.subtitle}>
                                 <DashCard message={item} />
                             </Col>
                         )
