@@ -37,7 +37,8 @@ const reducers = (initialState, { type, payload }) => {
                 ...initialState,
                 loading: false,
                 loaded: true,
-                drugs: payload.drugs,
+                // drugs: payload.drugs,
+                drug: payload.drug,
             };
         case "ADD_DRUG_SUCCESSFUL":
             return {
@@ -98,16 +99,10 @@ const reducers = (initialState, { type, payload }) => {
 };
 
 export const getDrugs = async (dispatch) => {
-    dispatch({
-        type: "REQUEST_DRUGS"
-    });
-    // await dispatch({
-    //         type: "GET_DRUGS_SUCCESSFUL",
-    //         payload: {
-    //             drugs: []
-    //         }
-    //     });
-    await axios.get('https://hospitalms-backend.herokuapp.com/prescriptions')
+    // dispatch({
+    //     type: "REQUEST_DRUGS"
+    // });
+    await axios.get('http://localhost:5000/prescriptions')
         .then(res => {
             dispatch({
                 type: "GET_DRUGS_SUCCESSFUL",
@@ -120,7 +115,7 @@ export const getDrugs = async (dispatch) => {
             dispatch({
                 type: "GET_DRUGS_FAILURE"
             });
-            console.log(`Error getting drugs: err`)
+            console.log(`Error getting drugs: ${err}`)
         })
 };
 export const getDrug = async (dispatch, drugId) => {
@@ -133,7 +128,7 @@ export const getDrug = async (dispatch, drugId) => {
     //             drugs: []
     //         }
     //     });
-    await axios.get(`https://hospitalms-backend.herokuapp.com/prescriptions/${drugId}`)
+    await axios.get(`http://localhost:5000/prescriptions/${drugId}`)
         .then(res => {
             dispatch({
                 type: "GET_DRUG_SUCCESSFUL",
@@ -146,7 +141,7 @@ export const getDrug = async (dispatch, drugId) => {
             dispatch({
                 type: "GET_DRUGS_FAILURE"
             });
-            console.log(`Error getting drug: err`)
+            console.log(`Error getting drug: ${err}`)
         })
 };
 
@@ -171,15 +166,16 @@ export const getDrug = async (dispatch, drugId) => {
 //         })
 // };
 export const updateDrug = async (dispatch, drugId, drug) => {
-    dispatch({
-        type: "REQUEST_DRUGS"
-    });
-    await axios.put(`https://hospitalms-backend.herokuapp.com/prescriptions/${drugId}`, drug)
+    // dispatch({
+    //     type: "REQUEST_DRUGS"
+    // });
+    await axios.put(`http://localhost:5000/prescriptions/${drugId}`, drug)
         .then(res => {
             dispatch({
                 type: "UPDATE_DRUG_SUCCESSFUL",
                 payload: {
-                    drugs: res.data
+                    // drugs: res.data.all,
+                    drug: res.data.one
                 }
             })
         })
@@ -195,7 +191,7 @@ export const addDrug = async (dispatch, drug) => {
         type: "REQUEST_DRUGS"
     });
     console.log(drug, 'me');
-    await axios.post("https://hospitalms-backend.herokuapp.com/prescriptions/", drug)
+    await axios.post("http://localhost:5000/prescriptions/", drug)
         .then(res => {
             dispatch({
                 type: "ADD_DRUG_SUCCESSFUL",
@@ -230,6 +226,38 @@ export const updateFee = async (dispatch, drugs) => {
             });
             console.log(`Error updating fee: err`)
         })
+};
+export const requestConsult = async (dispatch, userId, drug, user) => {
+    // dispatch({
+    //     type: "REQUEST_USERS"
+    // });
+        await axios.get(`http://localhost:5000/prescriptions/`)
+    .then(res=>{
+      console.log(res.data);
+      const id = res.data.one._id;
+      axios.put(`http://localhost:5000/users/${userId}`, {...user, folder: id})
+      .then(res=>{
+          dispatch({
+              type: "UPDATE_USER_SUCCESSFUL",
+              payload: {
+                  user: res.data.one,
+                  users: res.data.all
+              }
+          })
+      })
+      .catch(err=>{
+          dispatch({
+              type: "GET_DRUGS_FAILURE"
+          });
+          console.log(`Error updating user: ${err}`)
+      })
+    })
+    .catch(err=>{
+        dispatch({
+            type: "GET_DRUGS_FAILURE"
+        });
+        console.log(`Error requesting consult: ${err}`)
+    })
 };
 export const updatePayment = async (dispatch, data) => {
     dispatch({
@@ -295,7 +323,7 @@ const DrugsProvider = ({ children }) => {
     const [state, dispatch] = useReducer(reducers, initialState);
   
   useEffect(()=>{
-    axios.get("https://hospitalms-backend.herokuapp.com/prescriptions")
+    axios.get("http://localhost:5000/prescriptions")
     .then(res=>{
       dispatch({
           type: 'GET_DRUGS_SUCCESSFUL',

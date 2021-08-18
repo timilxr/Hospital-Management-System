@@ -19,16 +19,16 @@ const Header = () => {
 
     return (
         <div className="container-fluid bg-dark">
-            <Navbar bg="dark" variant="dark" expand="lg">
-                <Navbar.Brand>
+            <Navbar bg="dark" variant="dark" expand="md">
+                {/* <Navbar.Brand>
                     <Link className='text-decoration-none text-white' to="/">
                         <strong>H.M.S</strong>
                     </Link>
-                </Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                </Navbar.Brand> */}
+                <Navbar.Toggle aria-controls="basic-navbar-nav" className='bg-light ms-auto' />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mx-md-auto">
-                        <Nav.Link><Link className='text-decoration-none text-white' to='/'>Home</Link></Nav.Link>
+                        <Nav.Link><Link className='text-decoration-none text-white' to={isLoggedIn? '/dashboard': '/'}>Home</Link></Nav.Link>
 
                         {isLoggedIn ? (
                             user.isAdmin === true ? <Nav className="ms-md-auto">
@@ -44,11 +44,13 @@ const Header = () => {
                                 </Nav> : '')
                         ) : <Nav.Link><Link className='text-decoration-none text-white' to='/auth'>Login</Link></Nav.Link>}
                     </Nav>
-                    <Nav>
-                    <Nav.Link>
-                    <Button variant='danger' size='sm' type='button' onClick={logout}>Logout</Button>
-                </Nav.Link>
-                    </Nav>
+                    {isLoggedIn ? (
+                        <Nav>
+                        <Nav.Link>
+                        <Button variant='danger' size='sm' type='button' onClick={logout}>Logout</Button>
+                    </Nav.Link>
+                        </Nav>
+                    ): ''}
                 </Navbar.Collapse>
             </Navbar>
         </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { UsersDispatchContext, UsersStateContext, getUsers, toggleConsult } from '../contexts/users';
-import { DrugsDispatchContext, DrugsStateContext, getDrug, addDrug } from '../contexts/drugs';
+import { UsersDispatchContext, UsersStateContext, getUsers, updateUser } from '../contexts/users';
+import { DrugsDispatchContext, DrugsStateContext, updateDrug, addDrug, getDrugs } from '../contexts/drugs';
 import Loading from '../components/loading';
 import { useParams, useHistory } from 'react-router-dom';
 import { Form, Button, Alert, Row, Col } from 'react-bootstrap';
@@ -11,9 +11,11 @@ import Check from '../components/form-controls/check';
 
 const PrescribeDrugs = ({ ...props }) => {
     const history = useHistory();
-    const { patientId } = useParams();
+    const { fileId } = useParams();
     const dispatch = useContext(DrugsDispatchContext);
     const { users, loaded } = useContext(UsersStateContext);
+    const { drugs, loaded: drugLoaded } = useContext(DrugsStateContext);
+    console.log(users, drugs);
 
     const userDispatch = useContext(UsersDispatchContext);
     const [loading, setLoading] = useState(true);
@@ -28,8 +30,8 @@ const PrescribeDrugs = ({ ...props }) => {
         span: 'days',
     })
     const [data, setData] = useState({
-        doctorId: props.user._id,
-        patientId: patientId,
+        doctor_id: props.user._id,
+        // patient_id: drug.patient_id,
         drugs: [{
             prescription: 'Paracetamol 10mg',
             dosage: {
@@ -43,22 +45,33 @@ const PrescribeDrugs = ({ ...props }) => {
     });
     const [errors, setErrors] = useState({});
     const [msg, setMsg] = useState('');
+    const [color, setColor] = useState(null);
     const [validated, setValidated] = useState(false);
 
     useEffect(() => {
         getUsers(userDispatch);
+        getDrugs(dispatch);
         setLoading(false);
     }, [])
 
 
-    if (!loaded) {
+    if (!loaded || loading || !drugLoaded) {
         return <Loading />
     }
 
-    const doctors = users.filter(user => user.role === 'doctor');
-    const nurses = users.filter(user => user.role === 'nurse');
-    const patient = users.filter(user => user._id === patientId);
-    console.log(patient);
+    let drug;
+    if(drugs){
+        drug = drugs.filter(drug=>drug._id === fileId)[0];
+    }
+    let doctors;
+    let nurses;
+    let patient;
+    if(users && drugs){
+        doctors =users.filter(user => user.role === 'doctor');
+        nurses = users.filter(user => user.role === 'nurse');
+        patient = users.filter(user => user._id === drug.patient_id)[0];
+        console.log(patient);
+    }
 
     const formData = {
         prescription: {
@@ -107,7 +120,7 @@ const PrescribeDrugs = ({ ...props }) => {
             options: [...nurses]
         },
     };
-
+    const description =  drug.drugs[drug.drugs.length - 1].description
     const onInputChange = (e) => {
         const { name, value } = e.target;
         if (name === 'nurseId') {
@@ -116,18 +129,26 @@ const PrescribeDrugs = ({ ...props }) => {
             setPrescriptionData(value);
         } else {
             setDosageData((prevState) => {
+                // console.log(drug.drugs[drug.drugs.length - 1].description);
                 return {
                     ...prevState,
                     [name]: value
                 };
             });
         }
+        setData(prevState=>{
+            return{
+                ...prevState,
+               patient_id: drug.patient_id
+            }
+        })
         // console.log(e.target.value)
         setValidated(false);
     };
     const addExtra = (e) => {
         const data = [...drugData,
         {
+            description: description,
             prescription: prescriptionData,
             dosage: dosageData
         }];
@@ -136,24 +157,33 @@ const PrescribeDrugs = ({ ...props }) => {
         document.getElementById('form').reset();
     }
 
-    const consulted = (e) => {
-        const data = {
-            ...patient[0],
-            toBeConsulted: false
+    const consulted = async (e) => {
+        let update = {
+            // ...drug,
+            last_checked_by: 'doctor',
+            doctor_id: props.user._id,
+            to_be_consulted: false
         };
-        console.log(data);
-        toggleConsult(userDispatch, patient[0]._id, data);
-        setMsg('Consult Completed');
-        setErrors(null);
+        await updateDrug(dispatch, fileId, update);
+            setColor('success');
+            // setMsg('Check completed');
+            setMsg('Consult Completed');
+            alert(msg);
+        // const data = {
+        //     ...patient[0],
+        //     toBeConsulted: false
+        // };
+        // console.log(data);
+        // updateUser(userDispatch, patient[0]._id, data);
+        // setErrors(null);
         history.push('/dashboard');
     }
 
-    const handler = (e) => {
-        // console.log("state");
-        // alert(data);
+    const handler = async (e) => {
         const drugs = [...drugData,
         {
             prescription: prescriptionData,
+            description: description,
             dosage: dosageData
         }];
         setDrugData(drugs);
@@ -161,25 +191,43 @@ const PrescribeDrugs = ({ ...props }) => {
         const info = {
             ...data,
             // nurseId: nurseData ? nurseData : '',
+            last_checked_by: 'doctor',
             drugs: drugs
         };
-        addDrug(dispatch, info);
+        try {
+            await updateDrug(dispatch, fileId, info);
+        } catch (error) {
+            console.log(error);
+            setColor('danger');
+            setMsg('An error occured, please try again');
+            return 1;
+        }
+        setMsg('Successfully updated');
+        setColor('success');
+        // addDrug(dispatch, info);
         console.log(info);
         setValidated(true);
         e.preventDefault();
     };
 
-    const showMe = () => {
-        alert(data);
+    const showMe = (e) => {
+        // alert(data);
+        e.preventDefault();
     };
 
     return (
         <div>
             <div className='text-left my-5 p-3 p-md-5 pt-md-0'>
-                <h1 className="h1">Patient's Contact Info</h1>
-                <h2 style={{ textTransform: 'capitalize' }}>Patient Name: {patient[0].fullName}</h2>
-                <h3>Patient Phone: <a href={`tel:${patient[0].phone}`} className="text-decoration-none">{patient[0].phone}</a></h3>
-                <h3>Patient Email: <a href={`mail:${patient[0].email}`} className="text-decoration-none">{patient[0].email}</a></h3>
+                {
+                patient ? 
+                <div>
+                    <h1 className="h1">Patient's Contact Info</h1>
+                <h2 style={{ textTransform: 'capitalize' }}>Patient Name: {patient.full_name}</h2>
+                <h3>Patient Phone: <a href={`tel:${patient.phone}`} className="text-decoration-none">{patient.phone}</a></h3>
+                <h3>Patient Email: <a href={`mail:${patient.email}`} className="text-decoration-none">{patient.email}</a></h3>
+                <h3>Patient Vitals: {patient.description}</h3>
+                </div> : ''
+                }
                 <Button variant="primary" className='m-2' type="button" onClick={consulted}>
                     Mark Consulted
                 </Button>
@@ -188,8 +236,8 @@ const PrescribeDrugs = ({ ...props }) => {
             </div>
             <Form noValidate validated={validated} id='form' className='text-left my-5' onSubmit={showMe}>
                 {
-                    msg && !errors ? <Alert variant="success">{msg}</Alert> :
-                        (msg ? <Alert variant="danger">{msg}</Alert> : <Alert variant="primary">please fill the form to prescribe drugs</Alert>)
+                    // msg && !errors ? <Alert variant="success">{msg}</Alert> :
+                        msg ? <Alert variant={color}>{msg}</Alert> : <Alert variant="primary">please fill the form to prescribe drugs</Alert>
                 }
                 <Select key={formData.nurse.name} errors={errors} data={formData.nurse} getInput={onInputChange} />
                 {

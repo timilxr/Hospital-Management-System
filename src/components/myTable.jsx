@@ -5,21 +5,29 @@ import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
 
 const MyTable = (props) => {
-  const reKeys = Object.keys(props.data[0]);
+  const reKeys = props.data.length > 0 ? Object.keys(props.data[0]) : ['Message'];
   const length = Number(props.data.length);
   return length < 1 ? (
-    <h1>Loading</h1>
+    <h1>No Data</h1>
   ) : (
-    <Table striped bordered hover responsive variant="dark" className="container-fluid m-0 p-0">
+    <Table striped bordered hover responsive variant="dark" className="container-fluid m-0 mb-5 p-0">
       <thead>
         <tr>
           <th>#</th>
-          {reKeys.map((key) => (
-            <th key={key}>{key.toUpperCase()}</th>
-          ))}
-          {props.edFunc ? <th></th> : ""}
-          {props.delFunc ? <th></th> : ""}
-          {props.consult ? <th></th> : ""}
+          {reKeys.map(key =>{
+            switch(key){
+              case '_id':
+                key = key.replace('_', ' ');
+                return <th key={key}>{key.toUpperCase()}</th>
+              default:
+                key = key.replaceAll('_', ' ');
+                return <th key={key}>{key.toUpperCase()}</th>
+            }
+          })}
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
           <th></th>
         </tr>
       </thead>
@@ -32,12 +40,13 @@ const MyTable = (props) => {
               {Object.entries(value).map((val) => {
                 if (val[0] === "createdAt" || val[0] === "updatedAt") {
                   return <td key={val[0]}>{new Date(val[1]).toString()}</td>;
-                } else if (Array.isArray(val[1])) {
-                  return (
+                } else if (typeof val[1] === typeof []) {
+                  return val[1].length < 1 ? <td key={val[0]}>None</td> :
+                  (
                     <td key={val[0]}>
                       {val[1].map((detail, index) => {
+                      console.log(val[1]);
                         Object.values(detail).map(valu => {
-                          console.log(valu);
                           return <span>{valu}</span>
                         })
                       })}
@@ -45,11 +54,13 @@ const MyTable = (props) => {
                   );
                 } else if (typeof val[1] === 'boolean') {
                   return val[1] === true ? <td key={val[0]}>Yes</td> : <td key={val[0]}>No</td>
+                } else if (val[1] === '') {
+                  return val[1] === '' ? <td key={val[0]}>No</td> : <td key={val[0]}>{val[1]}</td>
                 } 
                 return <td key={val[0]}>{val[1]}</td>;
               })}
 
-              {props.consult && (
+              {(props.status === 'doctor' && value.to_be_consulted === true) ? (
                 <td>
                   <Link to={`/consulting/${value._id}`}>
                     <Button variant="primary" type="button">
@@ -57,8 +68,17 @@ const MyTable = (props) => {
                     </Button>
                   </Link>
                 </td>
-              )}
-              {props.check && (
+              ): <td></td>}
+              {(props.status === 'nurse') ? (
+                <td>
+                  <Link to={`/recordvitals/${value._id}`}>
+                    <Button variant="primary" type="button">
+                      Record Vitals
+                    </Button>
+                  </Link>
+                </td>
+              ): <td></td>}
+              {props.status === 'accountant' ? (
                 <td>
                   <Link to={`/check/${value._id}`}>
                     <Button variant="primary" type="button">
@@ -66,7 +86,7 @@ const MyTable = (props) => {
                     </Button>
                   </Link>
                 </td>
-              )}
+              ): <td></td>}
               {props.edFunc ? (
                 <td>
                   <Link to={`/${props.edFunc}/${value._id}`}>
@@ -75,8 +95,8 @@ const MyTable = (props) => {
                     </Button>
                   </Link>
                 </td>
-              ) : ''}
-              {props.delFunc && (
+              ) : <td></td>}
+              {props.delFunc ? (
                 <td>
                   <Button
                     variant="danger"
@@ -86,7 +106,7 @@ const MyTable = (props) => {
                     Delete
                   </Button>
                 </td>
-              )}
+              ): <td></td>}
             </tr>
           )
         })}

@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import { Form, Button, Alert } from 'react-bootstrap';
 import Input from './form-controls/input';
+import Loading from './loading';
 
 
 export const SignUp = ({ toggler, ...props }) => {
@@ -12,38 +13,43 @@ export const SignUp = ({ toggler, ...props }) => {
         name: {
             type: 'text',
             label: 'Fullname',
-            name: 'fullName',
+            name: 'full_name',
+            placeholder: 'Timi Ayo',
             value: ''
         },
         email: {
             type: 'email',
             label: 'Email',
             name: 'email',
+            placeholder: 'jackie@gmail.com',
             value: ''
         },
         phone: {
             type: 'tel',
             label: 'Phone',
             name: 'phone',
+            placeholder: '08088789432',
             value: ''
         },
         password: {
             type: 'password',
             label: 'Password',
             name: 'password',
+            placeholder: 'Enter secure password',
             value: ''
         }
     };
     const [data, setData] = useState({
-        fullName: '',
+        full_name: '',
         email: '',
         phone: Number,
         role: 'patient',
-        isAdmin: false,
+        admin: false,
         password: ''
     });
-    const [errors, setErrors] = useState({});
+    const [errors, setErrors] = useState('success');
     const [msg, setMsg] = useState(null);
+    const [loading, setLoading] = useState(false);
     const [validated, setValidated] = useState(false);
     const authdispatch = useContext(AuthDispatchContext);
     const userDispatch = useContext(UsersDispatchContext);
@@ -69,13 +75,18 @@ export const SignUp = ({ toggler, ...props }) => {
                 }
             });
             if (status === true) {
+                setLoading(true);
                 await addUser(userDispatch, data);
-                setMsg('you may now log in');
+                setLoading(false);
+                setErrors('success');
+                setMsg('You may now log in');
             } else {
+                setErrors('danger');
                 setMsg('Error please try again');
             }
         } catch (error) {
-            setMsg('Error please try again');
+                setErrors('danger');
+                setMsg('Error please try again');
             console.error(error);
         }
         console.log(data);
@@ -87,11 +98,15 @@ export const SignUp = ({ toggler, ...props }) => {
         e.preventDefault()
     };
 
+    if(loading){
+        return <Loading />
+    }
+
     return (
         <Form noValidate validated={validated} className='text-left my-5 p-5' onSubmit={showMe}>
             {
-                msg && !errors ? <Alert variant="success">{msg}</Alert> :
-                    (msg ? <Alert variant="danger">{msg}</Alert> : <Alert variant="primary">please fill the form</Alert>)
+                // errors === false ? <Alert variant="success">{msg}</Alert> :
+                    (msg ? <Alert variant={errors}>{msg}</Alert> : <Alert variant="primary">Please fill the form</Alert>)
             }
             {
                 Object.entries(formData).map(field => {
@@ -116,12 +131,14 @@ export const SignIn = ({ toggler, ...props }) => {
             type: 'email',
             label: 'Email',
             name: 'email',
+            placeholder: 'jackie@gmail.com',
             value: ''
         },
         password: {
             type: 'password',
             label: 'Password',
             name: 'password',
+            placeholder: 'Enter secure password',
             value: ''
         }
     };
@@ -132,6 +149,7 @@ export const SignIn = ({ toggler, ...props }) => {
     const [errors, setErrors] = useState({});
     const [msg, setMsg] = useState('');
     const [validated, setValidated] = useState(false);
+    const [loading, setLoading] = useState(false);
     const dispatch = useContext(AuthDispatchContext);
 
     const onInputChange = (e) => {
@@ -156,8 +174,10 @@ export const SignIn = ({ toggler, ...props }) => {
                 }
             });
             if (status === true) {
+                setLoading(true);
                 await signIn(dispatch, data);
-                setMsg('Sign In unSuccessful');
+                setLoading(false);
+                setMsg('Sign In Unsuccessful');
             } else {
                 setMsg('Error please try again');
             }
@@ -174,11 +194,15 @@ export const SignIn = ({ toggler, ...props }) => {
         e.preventDefault();
     };
 
+    if(loading){
+        return <Loading />
+    }
+
     return (
         <Form noValidate validated={validated} className='text-left my-5 p-5' onSubmit={showMe}>
             {
-                msg && !errors ? <Alert variant="success">{msg}</Alert> :
-                    (msg ? <Alert variant="danger">{msg}</Alert> : <Alert variant="primary">please fill the form</Alert>)
+                msg && errors === {} ? <Alert variant="success">{msg}</Alert> :
+                    (msg ? <Alert variant="danger">{msg}</Alert> : <Alert variant="primary">Please fill the form</Alert>)
             }
             {
                 Object.entries(formData).map(field => {

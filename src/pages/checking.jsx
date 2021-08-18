@@ -14,20 +14,22 @@ const Checking = ({ ...props }) => {
   console.log(holder);
 
   const [errors, setErrors] = useState({});
+  const [color, setColor] = useState(null);
   const [msg, setMsg] = useState('');
   const [validated, setValidated] = useState(false);
   if (!loaded) {
     return <Loading />
   }
   if (!holder) {
+    setColor('danger');
     setMsg('an Error occured during update');
     setErrors({
       error: 'no update'
     });
     return <div>
       {
-        msg && !errors ? <Alert variant="success">{msg}</Alert> :
-          (msg ? <Alert variant="danger">{msg}</Alert> : <Alert variant="primary">please fill the form</Alert>)
+        // msg && !errors ? <Alert variant="success">{msg}</Alert> :
+          msg ? <Alert variant={color}>{msg}</Alert> : <Alert variant="primary">please fill the form</Alert>
       }
     </div>
   }
@@ -44,8 +46,8 @@ const Checking = ({ ...props }) => {
       [name]: value
     };
     holding.checked = true;
-    holding.accountantId = props.user._id;
-    holding.totalPrice = holding.drugs.map(drug => Number(drug.price)).reduce((prev, curr) => prev + curr, 0);
+    holding.accountant_id = props.user._id;
+    holding.total_price = holding.drugs.map(drug => Number(drug.price)).reduce((prev, curr) => prev + curr, 0);
 
     console.log(holding);
     setValidated(false);
@@ -55,6 +57,7 @@ const Checking = ({ ...props }) => {
   const handler = (e) => {
     updateDrug(dispatch, drugId, drug[0]);
     console.log(drug);
+    setColor('success');
     setMsg('Drug Updated');
     setValidated(true);
     e.preventDefault();
@@ -65,20 +68,31 @@ const Checking = ({ ...props }) => {
   return <div>
     <Form noValidate validated={validated} className='text-left my-5'>
       {
-        msg && !errors ? <Alert variant="success">{msg}</Alert> :
-          (msg ? <Alert variant="danger">{msg}</Alert> : <Alert variant="primary">please fill data where applicable</Alert>)
+        // msg && !errors ? <Alert variant="success">{msg}</Alert> :
+          msg ? <Alert variant={color}>{msg}</Alert> : <Alert variant="primary">please fill data where applicable</Alert>
       }
       <Table striped bordered hover responsive variant="dark">
         <thead>
           <tr>
             <th>#</th>
-            {reKeys.map((key) => key === 'available' ?
-              <th key={key}>{key.toUpperCase()}?</th>
-              :
-              (key === 'price' ?
-                <th key={key} className='px-5'>{key.toUpperCase()}&nbsp;(#)</th>
-                :
-                <th key={key}>{key.toUpperCase()}</th>))}
+            {reKeys.map(key =>{
+              // if(key === 'available'){
+              // <th key={key}>{key.toUpperCase()}?</th>
+              // } else {
+            switch(key){
+              case '_id':
+                key = key.replace('_', ' ');
+                return <th key={key}>{key.toUpperCase()}</th>;
+              case 'available':
+                return <th key={key}>{key.toUpperCase()}?</th>
+              case 'price':
+                return <th key={key} className='px-5'>{key.toUpperCase()}&nbsp;(#)</th>;
+              default:
+                key = key.replaceAll('_', ' ');
+                return <th key={key}>{key.toUpperCase()}</th>
+            }
+          }
+          )}
           </tr>
         </thead>
         <tbody>

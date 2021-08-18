@@ -103,6 +103,38 @@ export const signIn = async (dispatch, userData) => {
   }
 };
 
+export const refresh = (dispatch) => {
+  let info = localStorage.getItem("Users3");
+  if (info) {
+    info = JSON.parse(info);
+    console.log(info);
+    let output;
+    try {
+      axios.post('http://localhost:5000/users/verify', info).then(res => {
+        output = res.data;
+        console.log(output);
+        let newState = {
+          ...initialState,
+          user: output.info ? output.user : null,
+          isLoggedIn: output.info,
+          loaded: true
+        };
+        return dispatch({type: 'LOGIN_SUCCESS',payload: {...newState}});
+        // setNewUserState(newState);
+      }).catch(err => {
+        console.log(err);
+        return dispatch({type: 'AUTH_FAILURE'});
+      })
+    } catch (error) {
+      output = false;
+      console.log(error);
+        return dispatch({type: 'AUTH_FAILURE'});
+    }
+  }else {
+    return dispatch({type: 'AUTH_FAILURE'});
+  }
+}
+
 export const signOut = (dispatch) => {
   localStorage.clear();
   return dispatch({
@@ -110,17 +142,6 @@ export const signOut = (dispatch) => {
   });
 };
 
-export const requestConsult = async (dispatch, user) => {
-  // dispatch({
-  //     type: "REQUEST_USERS"
-  // });
-  dispatch({
-    type: "TOGGLE_CONSULT",
-    payload: {
-      user: user
-    }
-  });
-};
 
 const AuthProvider = ({ children }) => {
   // const [newUserState, setNewUserState] = useState(initialState);
@@ -134,7 +155,7 @@ const AuthProvider = ({ children }) => {
       info = JSON.parse(info);
       console.log(info);
       try {
-        axios.post('https://hospitalms-backend.herokuapp.com/users/verify', info).then(res => {
+        axios.post('http://localhost:5000/users/verify', info).then(res => {
           output = res.data;
           console.log(res);
           newState = {

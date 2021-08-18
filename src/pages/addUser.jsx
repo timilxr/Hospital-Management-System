@@ -11,19 +11,19 @@ import { useHistory } from 'react-router-dom';
 const AddUser = (props) => {
     const history = useHistory();
     const userDispatch = useContext(UsersDispatchContext);
-    const { loading, users } = useContext(UsersStateContext);
+    const { loading, users, user } = useContext(UsersStateContext);
     const [newUser, setNewUser] = useState(true);
     useEffect(() => {
         getUsers(userDispatch);
     }, []);
 
-    !props.user.isAdmin && history.push('/dashboard');
+    !props.user.admin && history.push('/dashboard');
     const [data, setData] = useState({
-        fullName: '',
+        full_name: '',
         email: '',
         phone: Number,
         role: '',
-        isAdmin: false,
+        admin: false,
         password: ''
     });
 
@@ -31,7 +31,7 @@ const AddUser = (props) => {
         name: {
             type: 'text',
             label: 'Fullname',
-            name: 'fullName',
+            name: 'full_name',
             value: ''
         },
         email: {
@@ -56,7 +56,7 @@ const AddUser = (props) => {
         isAdmin: {
             type: 'check',
             label: 'Admin',
-            name: 'isAdmin',
+            name: 'admin',
             checked: data ? data.isAdmin : ''
         },
         password: {
@@ -67,6 +67,7 @@ const AddUser = (props) => {
         }
     };
     const [errors, setErrors] = useState({});
+    const [color, setColor] = useState(null);
     const [msg, setMsg] = useState(null);
     const [validated, setValidated] = useState(false);
 
@@ -87,26 +88,35 @@ const AddUser = (props) => {
 
     const handler = async (e) => {
         try {
+            console.log(data);
             let status = false;
             users.map(user => {
                 if (user.email === data.email) {
                     setMsg('Error: Email already in use')
+                    setColor('danger')
                     return status = true;
                 } else if (user.phone === data.phone) {
                     setMsg('Error: Phone number already in use')
+                    setColor('danger')
                     return status = true
                 }
             });
 
             if (status === false) {
-                await addUser(userDispatch, data)
-                console.log('me')
+                try {
+                    await addUser(userDispatch, data)
+                } catch (error) {
+                    setMsg('Error Adding user')
+                    setColor('danger')
+                }
+                setColor('success')
                 setMsg('you may now log in')
-                return 0
             }
             else return 1;
 
         } catch (error) {
+            setMsg('Error Adding user')
+            setColor('danger')
             console.error(error);
         }
         console.log(data);
@@ -114,15 +124,16 @@ const AddUser = (props) => {
         e.preventDefault();
     };
 
-    const showMe = () => {
+    const showMe = (e) => {
+        e.preventDefault();
         alert(msg);
     };
 
     return (
-        <Form noValidate validated={validated} className='text-left my-5 pt-5' onSubmit={showMe}>
+        <Form noValidate validated={validated} method='POST' className='text-left my-5 pt-5' onSubmit={showMe}>
             {
-                msg && !errors ? <Alert variant="success">{msg}</Alert> :
-                    (msg ? <Alert variant="danger">{msg}</Alert> : <Alert variant="primary">please fill the form</Alert>)
+                // msg && !errors ? <Alert variant="success">{msg}</Alert> :
+                    msg ? <Alert variant={color}>{msg}</Alert> : <Alert variant="primary">please fill the form</Alert>
             }
             {
                 Object.entries(formData).map(field => {

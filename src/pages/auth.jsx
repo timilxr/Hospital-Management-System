@@ -24,7 +24,7 @@ const AuthPage = (props) => {
     }
     return (
         <div>
-            <h1>Welcome to HOS</h1>
+            <h1 className='ms-3 ms-md-4'>Welcome to HOS</h1>
             <Row>
                 <Col sm={true}>
                     <div className='pt-5 my-5'>

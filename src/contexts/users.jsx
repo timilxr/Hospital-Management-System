@@ -2,7 +2,7 @@ import React, { createContext, useReducer, useEffect, useState } from "react";
 // import axios from "axios";
 // import useLocalStorage from "../action/useLocalStorage";
 import axios from "axios";
-import { set } from "lodash";
+// import { set } from "lodash";
 
 const initialState = {
   loading: false,
@@ -63,7 +63,7 @@ const reducers = (state, { type, payload }) => {
         ...state,
         loading: false,
         loaded: true,
-        users: payload.users,
+        users: state.users.filter((user)=>user._id != payload.userId)
       };
     case "REQUEST_FAILURE":
       return {
@@ -76,6 +76,7 @@ const reducers = (state, { type, payload }) => {
         ...state,
         loading: false,
         loaded: true,
+        user: null
       };
     default:
       throw new Error(`Unknown action type: ${type}`);
@@ -84,10 +85,10 @@ const reducers = (state, { type, payload }) => {
 
 export const getUsers = async (dispatch) => {
   
-    dispatch({
-        type: "REQUEST_USERS"
-    });
-    await axios.get("https://hospitalms-backend.herokuapp.com/users")
+    // dispatch({
+    //     type: "REQUEST_USERS"
+    // });
+    await axios.get("http://localhost:5000/users")
     .then(res=>{
         dispatch({
             type: "GET_USERS_SUCCESSFUL",
@@ -100,14 +101,14 @@ export const getUsers = async (dispatch) => {
         dispatch({
             type: "USERS_FAILURE"
         });
-        console.log(`Error getting users: err`)
+        console.log(`Error getting users: ${err}`)
     })
 };
 export const getUser = async (dispatch, userId) => {
     dispatch({
         type: "REQUEST_USERS"
     });
-    await axios.get(`https://hospitalms-backend.herokuapp.com/users/${userId}`)
+    await axios.get(`http://localhost:5000/users/${userId}`)
     .then(res=>{
         dispatch({
             type: "GET_USER_SUCCESSFUL",
@@ -120,7 +121,7 @@ export const getUser = async (dispatch, userId) => {
         dispatch({
             type: "USERS_FAILURE"
         });
-        console.log(`Error getting users: err`)
+        console.log(`Error getting user: ${err}`)
     })
 };
 
@@ -128,7 +129,7 @@ export const addUser = async (dispatch, user) => {
     dispatch({
         type: "REQUEST_USERS"
     });
-    await axios.post(`https://hospitalms-backend.herokuapp.com/users`, user)
+    await axios.post(`http://localhost:5000/users`, user)
     .then(res=>{
         dispatch({
             type: "ADD_USER_SUCCESSFUL",
@@ -141,19 +142,20 @@ export const addUser = async (dispatch, user) => {
         dispatch({
             type: "USERS_FAILURE"
         });
-        console.log(`Error adding users: err`)
+        console.log(`Error adding users: ${err}`)
     })
 };
 export const updateUser = async (dispatch, userId, user) => {
-    dispatch({
-        type: "REQUEST_USERS"
-    });
-    await axios.put(`https://hospitalms-backend.herokuapp.com/users/${userId}`, user)
+    // dispatch({
+    //     type: "REQUEST_USERS"
+    // });
+    await axios.put(`http://localhost:5000/users/${userId}`, user)
     .then(res=>{
         dispatch({
             type: "UPDATE_USER_SUCCESSFUL",
             payload: {
-                user: res.data
+                user: res.data.one,
+                // users: [...res.data.all]
             }
         })
     })
@@ -161,41 +163,54 @@ export const updateUser = async (dispatch, userId, user) => {
         dispatch({
             type: "REQUEST_FAILURE"
         });
-        console.log(`Error updating user: err`)
+        console.log(`Error updating user: ${err}`)
     })
 };
-export const toggleConsult = async (dispatch, userId, user) => {
+export const purchaseFolder = async (dispatch, userId, drug, user) => {
     dispatch({
         type: "REQUEST_USERS"
     });
-        await axios.put(`https://hospitalms-backend.herokuapp.com/users/${userId}`, user)
+        await axios.post(`http://localhost:5000/prescriptions/`, drug)
     .then(res=>{
-        dispatch({
-            type: "UPDATE_USER_SUCCESSFUL",
-            payload: {
-                user: res.data
-            }
-        })
+      console.log(res.data);
+      const id = res.data.one._id;
+      axios.put(`http://localhost:5000/users/${userId}`, {...user, folder: id})
+      .then(res=>{
+          dispatch({
+              type: "UPDATE_USER_SUCCESSFUL",
+              payload: {
+                  user: res.data.one,
+                  users: res.data.all
+              }
+          })
+      })
+      .catch(err=>{
+          dispatch({
+              type: "USERS_FAILURE"
+          });
+          console.log(`Error updating user: ${err}`)
+      })
     })
     .catch(err=>{
         dispatch({
             type: "USERS_FAILURE"
         });
-        console.log(`Error consulting user: ${err}`)
+        console.log(`Error buying folder: ${err}`)
     })
 };
 export const removeUser = async (dispatch, userId) => {
     dispatch({
         type: "REQUEST_USERS"
     });
-    await axios.delete(`https://hospitalms-backend.herokuapp.com/users/${userId}`)
+    await axios.delete(`http://localhost:5000/users/${userId}`)
     .then(res=>{
+      console.log(res.data);
         dispatch({
             type: "REMOVE_USER_SUCCESSFUL",
             payload: {
-                users: res.data
+                userId: userId
             }
-        })
+        });
     })
     .catch(err=>{
         dispatch({
@@ -209,7 +224,7 @@ const UsersProvider = ({ children }) => {
   const [users, setUsers] = useState(initialState);
   
   useEffect(()=>{
-    axios.get("https://hospitalms-backend.herokuapp.com/users")
+    axios.get("http://localhost:5000/users")
     .then(res=>{
       setUsers({
         loading: false,

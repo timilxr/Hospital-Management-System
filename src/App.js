@@ -16,6 +16,7 @@ import PrescribeDrugs from './pages/prescribeDrug';
 import DrugRecords from './pages/drugs';
 import Checking from './pages/checking';
 import AddUser from './pages/addUser';
+import RecordVitals from './pages/recordVitals';
 // import './App.css';
 
 function App() {
@@ -36,8 +37,9 @@ function App() {
                 <ProtectedRoute exact path="/prescriptions/:drugCategory" component={DrugRecords} />
                 <ProtectedRoute exact path="/prescriptions" component={DrugRecords} />
                 <ProtectedRoute exact path="/check/:drugId" component={Checking} />
-                <ProtectedRoute exact path="/consulting/:patientId" component={PrescribeDrugs} />
+                <ProtectedRoute exact path="/consulting/:fileId" component={PrescribeDrugs} />
                 <ProtectedRoute exact path="/adduser" component={AddUser} />
+                <ProtectedRoute exact path="/recordvitals/:drugId" component={RecordVitals} />
                 {/* <ProtectedRoute exact path="/editUser/:id" component={EditUser} /> */}
               </Switch>
             </Router>
