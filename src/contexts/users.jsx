@@ -88,7 +88,7 @@ export const getUsers = async (dispatch) => {
     // dispatch({
     //     type: "REQUEST_USERS"
     // });
-    await axios.get("http://localhost:5000/users")
+    await axios.get("https://hospitalms-backend.herokuapp.com/users")
     .then(res=>{
         dispatch({
             type: "GET_USERS_SUCCESSFUL",
@@ -108,7 +108,7 @@ export const getUser = async (dispatch, userId) => {
     dispatch({
         type: "REQUEST_USERS"
     });
-    await axios.get(`http://localhost:5000/users/${userId}`)
+    await axios.get(`https://hospitalms-backend.herokuapp.com/users/${userId}`)
     .then(res=>{
         dispatch({
             type: "GET_USER_SUCCESSFUL",
@@ -129,7 +129,7 @@ export const addUser = async (dispatch, user) => {
     dispatch({
         type: "REQUEST_USERS"
     });
-    await axios.post(`http://localhost:5000/users`, user)
+    await axios.post(`https://hospitalms-backend.herokuapp.com/users`, user)
     .then(res=>{
         dispatch({
             type: "ADD_USER_SUCCESSFUL",
@@ -149,7 +149,7 @@ export const updateUser = async (dispatch, userId, user) => {
     // dispatch({
     //     type: "REQUEST_USERS"
     // });
-    await axios.put(`http://localhost:5000/users/${userId}`, user)
+    await axios.put(`https://hospitalms-backend.herokuapp.com/users/${userId}`, user)
     .then(res=>{
         dispatch({
             type: "UPDATE_USER_SUCCESSFUL",
@@ -170,11 +170,11 @@ export const purchaseFolder = async (dispatch, userId, drug, user) => {
     dispatch({
         type: "REQUEST_USERS"
     });
-        await axios.post(`http://localhost:5000/prescriptions/`, drug)
+        await axios.post(`https://hospitalms-backend.herokuapp.com/prescriptions/`, drug)
     .then(res=>{
       console.log(res.data);
       const id = res.data.one._id;
-      axios.put(`http://localhost:5000/users/${userId}`, {...user, folder: id})
+      axios.put(`https://hospitalms-backend.herokuapp.com/users/${userId}`, {...user, folder: id})
       .then(res=>{
           dispatch({
               type: "UPDATE_USER_SUCCESSFUL",
@@ -202,7 +202,7 @@ export const removeUser = async (dispatch, userId) => {
     dispatch({
         type: "REQUEST_USERS"
     });
-    await axios.delete(`http://localhost:5000/users/${userId}`)
+    await axios.delete(`https://hospitalms-backend.herokuapp.com/users/${userId}`)
     .then(res=>{
       console.log(res.data);
         dispatch({
@@ -224,7 +224,7 @@ const UsersProvider = ({ children }) => {
   const [users, setUsers] = useState(initialState);
   
   useEffect(()=>{
-    axios.get("http://localhost:5000/users")
+    axios.get("https://hospitalms-backend.herokuapp.com/users")
     .then(res=>{
       setUsers({
         loading: false,

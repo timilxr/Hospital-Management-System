@@ -110,7 +110,7 @@ export const refresh = (dispatch) => {
     console.log(info);
     let output;
     try {
-      axios.post('http://localhost:5000/users/verify', info).then(res => {
+      axios.post('https://hospitalms-backend.herokuapp.com/users/verify', info).then(res => {
         output = res.data;
         console.log(output);
         let newState = {
@@ -155,7 +155,7 @@ const AuthProvider = ({ children }) => {
       info = JSON.parse(info);
       console.log(info);
       try {
-        axios.post('http://localhost:5000/users/verify', info).then(res => {
+        axios.post('https://hospitalms-backend.herokuapp.com/users/verify', info).then(res => {
           output = res.data;
           console.log(res);
           newState = {

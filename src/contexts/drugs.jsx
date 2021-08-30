@@ -102,7 +102,7 @@ export const getDrugs = async (dispatch) => {
     // dispatch({
     //     type: "REQUEST_DRUGS"
     // });
-    await axios.get('http://localhost:5000/prescriptions')
+    await axios.get('https://hospitalms-backend.herokuapp.com/prescriptions')
         .then(res => {
             dispatch({
                 type: "GET_DRUGS_SUCCESSFUL",
@@ -128,7 +128,7 @@ export const getDrug = async (dispatch, drugId) => {
     //             drugs: []
     //         }
     //     });
-    await axios.get(`http://localhost:5000/prescriptions/${drugId}`)
+    await axios.get(`https://hospitalms-backend.herokuapp.com/prescriptions/${drugId}`)
         .then(res => {
             dispatch({
                 type: "GET_DRUG_SUCCESSFUL",
@@ -169,7 +169,7 @@ export const updateDrug = async (dispatch, drugId, drug) => {
     // dispatch({
     //     type: "REQUEST_DRUGS"
     // });
-    await axios.put(`http://localhost:5000/prescriptions/${drugId}`, drug)
+    await axios.put(`https://hospitalms-backend.herokuapp.com/prescriptions/${drugId}`, drug)
         .then(res => {
             dispatch({
                 type: "UPDATE_DRUG_SUCCESSFUL",
@@ -191,7 +191,7 @@ export const addDrug = async (dispatch, drug) => {
         type: "REQUEST_DRUGS"
     });
     console.log(drug, 'me');
-    await axios.post("http://localhost:5000/prescriptions/", drug)
+    await axios.post("https://hospitalms-backend.herokuapp.com/prescriptions/", drug)
         .then(res => {
             dispatch({
                 type: "ADD_DRUG_SUCCESSFUL",
@@ -231,11 +231,11 @@ export const requestConsult = async (dispatch, userId, drug, user) => {
     // dispatch({
     //     type: "REQUEST_USERS"
     // });
-        await axios.get(`http://localhost:5000/prescriptions/`)
+        await axios.get(`https://hospitalms-backend.herokuapp.com/prescriptions/`)
     .then(res=>{
       console.log(res.data);
       const id = res.data.one._id;
-      axios.put(`http://localhost:5000/users/${userId}`, {...user, folder: id})
+      axios.put(`https://hospitalms-backend.herokuapp.com/users/${userId}`, {...user, folder: id})
       .then(res=>{
           dispatch({
               type: "UPDATE_USER_SUCCESSFUL",
@@ -323,7 +323,7 @@ const DrugsProvider = ({ children }) => {
     const [state, dispatch] = useReducer(reducers, initialState);
   
   useEffect(()=>{
-    axios.get("http://localhost:5000/prescriptions")
+    axios.get("https://hospitalms-backend.herokuapp.com/prescriptions")
     .then(res=>{
       dispatch({
           type: 'GET_DRUGS_SUCCESSFUL',
