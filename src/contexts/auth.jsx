@@ -62,7 +62,7 @@ export const signIn = async (dispatch, userData) => {
   // const data = JSON.parse(userData);
   let output;
   try {
-    await axios.post('https://hospitalms-backend.herokuapp.com/users/verify', userData)
+    await axios.post('http://localhost:5000/users/verify', userData)
       .then(res => {
         console.log(res);
         output = res;
